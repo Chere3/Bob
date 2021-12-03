@@ -19,7 +19,11 @@ declare global {
     interface ProcessEnv {
       TOKEN: string;
       MONGO_URI: string;
+      MONGO_URI2: string;
       MONGO_API: string;
+      AUTH_LOGS: string;
+      AUTH_R_LOGS: string;
+      AUTH_RR_LOGS: string;
     }
 
     interface Global {
