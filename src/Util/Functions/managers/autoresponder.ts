@@ -1,7 +1,20 @@
-import { Message, MessageActionRow, MessageButton } from "discord.js";
+import {
+  Message,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+} from "discord.js";
 
 export function spammer(message: Message) {
   if (message.author.bot) return;
+
+  const embed = new MessageEmbed()
+    .setAuthor(`¡Pruebame!`)
+    .setDescription(
+      `Ahora puedes **usar un mejor bot**, ¿recuerdas un bot llamado *utilities* que contaba las **acciones que haces?** pues este bot ha vuelto de forma mejorada.\n\nSolo pon:\n\`!hug\`\n\`!kiss\`\n\`!pat\``
+    )
+    .setColor("ORANGE");
+
   const component = new MessageButton()
     .setLabel(`Cerrar mensaje`)
     .setStyle("DANGER")
@@ -17,7 +30,7 @@ export function spammer(message: Message) {
     message.content.toLowerCase().startsWith("furhug")
   )
     return message.reply({
-      content: `¿Sí sabías que ahora puedes usar comandos sociales más avanzados y que tú puedes subir tus propias imagenes?\nSolo pon \`!hug\` o \`!kiss\` o \`!pat\` y el nombre del usuario que quieres que te haga ese comando.`,
+      embeds: [embed],
       components: [row],
     });
 }
