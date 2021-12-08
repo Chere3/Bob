@@ -4,6 +4,7 @@ export interface descriptions {
   id: string;
   hug: string[];
   kiss: string[];
+  pats: string[];
   happy: string[];
   sad: string[];
   angry: string[];
@@ -21,6 +22,7 @@ export const descriptionsSchema = new Schema<descriptions>({
   id: { type: String, required: true, default: "first" },
   hug: { type: Array, required: true, default: [] },
   kiss: { type: Array, required: true, default: [] },
+  pats: { type: Array, required: true, default: [] },
   happy: { type: Array, required: true, default: [] },
   sad: { type: Array, required: true, default: [] },
   angry: { type: Array, required: true, default: [] },

@@ -1,6 +1,7 @@
 export type imagesDB =
   | "hug"
   | "kiss"
+  | "pat"
   | "happy"
   | "sad"
   | "angry"
@@ -16,6 +17,7 @@ export type imagesDB =
 export const imagesDB = [
   "hug",
   "kiss",
+  "pat",
   "happy",
   "sad",
   "angry",

@@ -1,9 +1,10 @@
-import { MessageEmbed, ShardingManager } from "discord.js";
-import superagent from "superagent";
+import { Collection, Client, MessageEmbed } from "discord.js";
 import { config } from "./config";
+import { handlers } from "./Util/Functions/handlers";
 import Captain from "captainjs";
-import path from "path";
+import login from "./Database/login";
 import "./Typings";
+import superagent from "superagent";
 
 global.prettyConsole = new Captain.Console({
   use_colors: true,
@@ -16,26 +17,36 @@ global.prettyConsole = new Captain.Console({
   debug_prefix: "§bDebug",
 });
 
-const Manager = new ShardingManager(path.join(`${__dirname}/main.ts`), {
-  totalShards: "auto",
-  token: config.auth.token,
-  execArgv: ["node_modules/ts-node/dist/bin.js"],
+const TempoClient = new Client({
+  intents: [
+    "DIRECT_MESSAGES",
+    "DIRECT_MESSAGE_REACTIONS",
+    "DIRECT_MESSAGE_TYPING",
+    "GUILDS",
+    "GUILD_BANS",
+    "GUILD_EMOJIS_AND_STICKERS",
+    "GUILD_INTEGRATIONS",
+    "GUILD_INVITES",
+    "GUILD_MEMBERS",
+    "GUILD_MESSAGES",
+    "GUILD_MESSAGE_REACTIONS",
+    "GUILD_MESSAGE_TYPING",
+    "GUILD_PRESENCES",
+    "GUILD_VOICE_STATES",
+    "GUILD_WEBHOOKS",
+  ],
+  allowedMentions: { repliedUser: false, parse: ["users"] },
 });
 
-Manager.spawn();
+TempoClient.slashCommands = new Collection();
+TempoClient.commands = new Collection();
 
-Manager.on("shardCreate", (shard) => {
-  global.prettyConsole.log(`La shard ${shard.id + 1} fue creada.`);
+handlers(TempoClient);
 
-  shard.on("disconnect", () =>
-    global.prettyConsole.log(`La shard ${shard.id + 1} se desconecto.`)
-  );
-  shard.on("reconnecting", () =>
-    global.prettyConsole.log(`Shard ${shard.id + 1} resumida.`)
-  );
-  shard.on("ready", () =>
-    global.prettyConsole.log(`La shard ${shard.id + 1} esta lista.`)
-  );
+TempoClient.login(config.auth.token).then((x) => {
+  login.then(() => {
+    global.prettyConsole.log(`La base de datos 1 esta lista.`);
+  });
 });
 
 process.on("rejectionHandled", async (a) => {

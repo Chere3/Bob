@@ -9,6 +9,7 @@ export interface DBUser {
 export interface social {
   hugs: number;
   kisses: number;
+  pats: number;
   happy: number;
   sad: number;
   angry: number;
@@ -28,6 +29,7 @@ export const userSchema = new Schema<DBUser>({
   social: {
     hugs: { type: Number, required: true, default: 0 },
     kisses: { type: Number, required: true, default: 0 },
+    pats: { type: Number, required: true, default: 0 },
     happy: { type: Number, required: true, default: 0 },
     sad: { type: Number, required: true, default: 0 },
     angry: { type: Number, required: true, default: 0 },

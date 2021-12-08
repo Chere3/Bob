@@ -7,6 +7,8 @@ import { images, imagesModel } from "../../../Database/schemas/Images";
 import { imagesDB } from "../../constants/imagesDB";
 import { social, DBUser, userModel } from "../../../Database/schemas/User";
 import { getDBUser } from "./userManager";
+import { config } from "../../../config";
+import { getPerson } from "../utils/apiUtil";
 
 /**
  * @function checkImage - Checa si la imagen dada es válida.
@@ -94,6 +96,11 @@ export async function addImage(imageURL: string, imageType: imagesDB) {
     return await imagesModel
       .findOneAndUpdate({ id: "first" }, { kiss: kisses })
       .catch((a) => console.log(a));
+  } else if (imageType == "pat") {
+    const pats = imagenes.pats;
+    pats.push(imageURL);
+
+    return await imagesModel.findOneAndUpdate({ id: "first" }, { pat: pats });
   } else if (imageType == "happy") {
     const happy = imagenes.happy;
     happy.push(imageURL);
@@ -203,6 +210,13 @@ export async function addDescription(desc: string, type: imagesDB) {
 
     return await descriptionsModel
       .findOneAndUpdate({ id: "first" }, { kiss: kisses })
+      .catch((a) => console.log(a));
+  } else if (type == "pat") {
+    const pat = descriptions.pats;
+    pat.push(desc);
+
+    return await descriptionsModel
+      .findOneAndUpdate({ id: "first" }, { pats: pat })
       .catch((a) => console.log(a));
   } else if (type == "happy") {
     const happy = descriptions.happy;
@@ -319,6 +333,13 @@ export async function addImages(imagesURL: string[], imageType: imagesDB) {
 
     return await imagesModel
       .findOneAndUpdate({ id: "first" }, { kiss: kisses })
+      .catch((a) => console.log(a));
+  } else if (imageType == "pat") {
+    const pat = imagenes.pats;
+    await imagesURL.map((x) => pat.push(x));
+
+    return await imagesModel
+      .findOneAndUpdate({ id: "first" }, { pat: pat })
       .catch((a) => console.log(a));
   } else if (imageType == "happy") {
     const happy = imagenes.happy;
@@ -476,6 +497,9 @@ export async function getRandomCategorieImage(imageType: imagesDB) {
   } else if (imageType == "kiss") {
     const kisses = imagenes.kiss;
     return await sortImages(kisses);
+  } else if (imageType == "pat") {
+    const pats = imagenes.pats;
+    return await sortImages(pats);
   } else if (imageType == "happy") {
     const happy = imagenes.happy;
     return await sortImages(happy);
@@ -532,6 +556,9 @@ export async function getRandomDescription(typeDesc: imagesDB) {
   } else if (typeDesc == "kiss") {
     const kisses = imagenes.kiss;
     return await sortImages(kisses);
+  } else if (typeDesc == "pat") {
+    const pats = imagenes.pats;
+    return await sortImages(pats);
   } else if (typeDesc == "happy") {
     const happy = imagenes.happy;
     return await sortImages(happy);
@@ -580,35 +607,48 @@ export async function getRandomDescription(typeDesc: imagesDB) {
  */
 
 export async function getD(message: Message, typeDesc: imagesDB) {
-  if (
-    message.mentions.users.map((x) => x).length == 0 ||
-    !message.mentions.repliedUser == null
-  )
-    throw TypeError(`ANY_MENTIONS`);
-  if (message.mentions.users.first().id == message.author.id)
-    throw TypeError(`EQUAL_AS_AUTHOR`);
-  if (message.mentions.repliedUser !== null) {
-    if (message.mentions.repliedUser.id == message.author.id)
-      throw TypeError(`EQUAL_AS_REPLY`);
-  }
+  const args = message.content
+    .slice(config.prefix.length)
+    .trim()
+    .split(/ +/g)
+    .slice(1);
 
-  const user = message.mentions.users.first() || message.mentions.repliedUser;
-
-  var desc = await getRandomDescription(typeDesc);
-
-  const a = desc
-    .replace(/{user}/g, user.username)
-    .replace(/{author}/g, message.author.username);
-
-  interface desc {
-    user: User;
+  interface result {
     desc: string;
+    user?: User | null | undefined;
+    author?: User | null | undefined;
   }
+
+  const desc = await getRandomDescription(typeDesc);
+
+  if (!args) {
+    if (!message.mentions.repliedUser) {
+      throw TypeError("NAN_ARGS");
+    } else {
+      const formattedo = desc
+        .replace("{user}", message.mentions.repliedUser.username)
+        .replace("{author}", message.author.username);
+      return {
+        desc: formattedo,
+        user: message.mentions.repliedUser,
+        author: message.author,
+      } as result;
+    }
+  }
+  const user = await getPerson(args.join(" "), message);
+
+  if (user == undefined) throw TypeError("NAN_USER");
+  if (user.id == message.author.id) throw TypeError("EQUAL_AUTHOR");
+
+  const formatted = desc
+    .replace("{user}", user.username)
+    .replace("{author}", message.author.username);
 
   return {
+    desc: formatted,
     user: user,
-    desc: a,
-  } as desc;
+    author: message.author,
+  } as result;
 }
 
 /**
@@ -632,6 +672,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const hugconfig = {
       hugs: hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -653,6 +694,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const kissconfig = {
       hugs: user.social.hugs,
       kisses: kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -671,12 +713,38 @@ export async function getIntNumber1(id: string, type: imagesDB) {
       { social: kissconfig }
     ) as any;
     return (await a).social.kisses;
+  } else if (type == "pat") {
+    const pats = user.social.pats + 1;
+
+    const patconfig = {
+      hugs: user.social.hugs,
+      kisses: user.social.kisses,
+      pats: pats,
+      happy: user.social.happy,
+      sad: user.social.sad,
+      angry: user.social.angry,
+      love: user.social.love,
+      hate: user.social.hate,
+      confused: user.social.confused,
+      bored: user.social.bored,
+      scared: user.social.scared,
+      fucks: user.social.fucks,
+      licks: user.social.licks,
+      sucks: user.social.sucks,
+    };
+
+    const a = userModel.findOneAndUpdate(
+      { id: id },
+      { social: patconfig }
+    ) as any;
+    return (await a).social.pats;
   } else if (type == "happy") {
     const happy = user.social.happy + 1;
 
     const happyconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -701,6 +769,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const sadconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: sad,
       angry: user.social.angry,
@@ -725,6 +794,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const angryconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: angry,
@@ -749,6 +819,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const loveconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -773,6 +844,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const hateconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -797,6 +869,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const confusedconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -821,6 +894,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const boredconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -845,6 +919,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const scaredconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -869,6 +944,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const fucksconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -893,6 +969,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const licksconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -917,6 +994,7 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     const sucksconfig = {
       hugs: user.social.hugs,
       kisses: user.social.kisses,
+      pats: user.social.pats,
       happy: user.social.happy,
       sad: user.social.sad,
       angry: user.social.angry,
@@ -952,21 +1030,23 @@ export async function getIntNumber1(id: string, type: imagesDB) {
 export async function getFinalResult(message: Message, type: imagesDB) {
   const description = await getD(message, type);
   const image = await getRandomCategorieImage(type);
-  const number = await getIntNumber1(message.author.id, type);
   const number2 = await getIntNumber1(description.user.id, type);
+  const authorDB = await getDBUser(message.author.id);
 
   interface finalSocialCommand {
     description: string;
     image: string;
-    author: number;
+    userS: User;
     user: number;
+    author: DBUser;
   }
 
   const finalSocialCommand = {
     description: description.desc,
     image: image,
-    author: number,
-    user: number2,
+    userS: description.user,
+    user: number2 + 1,
+    author: authorDB,
   };
 
   return finalSocialCommand as finalSocialCommand;
