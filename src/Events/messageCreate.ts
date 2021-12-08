@@ -1,13 +1,13 @@
 import { TempContext } from "../Util/Classes/Context";
 import { config } from "../config";
 import { getDBUser } from "../Util/Functions/managers/userManager";
-import { getCleverbot, formatText } from "../Util/Functions/utils/textUtil";
 import { Message } from "discord.js";
 import { spammer } from "../Util/Functions/managers/autoresponder";
 import {
   getDBDescriptions,
   getDBImages,
 } from "../Util/Functions/managers/socialCommandsManager";
+import { MasterCleverbot } from "../Util/Functions/managers/cleverbotManager";
 
 const { prefix } = config;
 
@@ -15,24 +15,12 @@ export const run = async (bot, msg: Message) => {
   spammer(msg);
   if (msg.author.bot) return;
 
-  if (msg.channel.id == "914963515205378078") {
-    if (formatText(msg.content).length == 0)
-      return msg.reply({
-        content: `Nose; pero tú mensaje no lo procese dado que no contiene nada.`,
-      });
-    const a = await getCleverbot(msg.content).catch((a) => {
-      return msg.reply(
-        `\`\`\`diff\n- Ha ocurrido un error cuando cleverbot te iba a contestar, por favor intentalo más tarde.\n${a}\`\`\``
-      );
-    });
+  var name = (await msg.channel.name) || " ";
 
-    return msg
-      .reply({ content: a, allowedMentions: { repliedUser: true } })
-      .catch((a) => {
-        msg.reply(
-          `\`\`\`diff\n- Ha ocurrido un error cuando clverbot te iba a responder.\n${a}\`\`\``
-        );
-      });
+  if (msg.channel.type !== "GUILD_TEXT") {
+    return;
+  } else if (name.includes("cleverbot") == true) {
+    MasterCleverbot(msg);
   }
 
   await getDBDescriptions();

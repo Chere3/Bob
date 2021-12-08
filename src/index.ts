@@ -40,6 +40,7 @@ const TempoClient = new Client({
 
 TempoClient.slashCommands = new Collection();
 TempoClient.commands = new Collection();
+TempoClient.cleverCooldown = new Collection();
 
 handlers(TempoClient);
 

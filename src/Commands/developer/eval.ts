@@ -3,7 +3,6 @@ import { inspect } from "util";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
 import { imagesModel } from "../../Database/schemas/Images";
-import { formatText } from "../../Util/Functions/utils/textUtil";
 import {
   checkDescription,
   getFinalResult,
@@ -23,6 +22,7 @@ import {
   parseType,
   separeTexto,
 } from "../../Util/Functions/utils/textUtil";
+import { MasterCleverbot } from "../../Util/Functions/managers/cleverbotManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -39,7 +39,6 @@ export default class NameCommand extends BaseCommand {
     const imgadd = addImage;
     const imagenes = getDBImages;
     const imgs = imagesModel;
-    const formatclever = formatText;
     const sortear = sortImages;
     const getImage = getRandomCategorieImage;
     const getD = getDBDescriptions;
@@ -47,6 +46,7 @@ export default class NameCommand extends BaseCommand {
     const checkD = checkDescription;
     const separe = separeTexto;
     const result = getFinalResult;
+    const clrCore = MasterCleverbot;
     const { query, flags } = parseQuery(base.args);
 
     if (!query.length) return;

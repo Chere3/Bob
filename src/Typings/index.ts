@@ -7,10 +7,12 @@ declare module "discord.js" {
   interface Client {
     commands: Collection<string, BaseCommand>;
     slashCommands: Collection<string, BaseSlashCommand>;
+    cleverCooldown: Collection<string, number>;
   }
 
   interface Channel {
     nsfw?: boolean;
+    name: string | null;
   }
 }
 

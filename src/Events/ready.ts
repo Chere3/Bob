@@ -9,4 +9,6 @@ export const run = async (bot: Client) => {
     ],
     status: "idle",
   });
+
+  global.prettyConsole.log(`El cliente esta listo.`);
 };
