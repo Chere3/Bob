@@ -2,12 +2,13 @@ import { TempContext } from "../Util/Classes/Context";
 import { config } from "../config";
 import { getDBUser } from "../Util/Functions/managers/userManager";
 import { Message } from "discord.js";
-import { spammer } from "../Util/Functions/managers/autoresponder";
+import { spammer } from "../Util/Functions/managers/littleManagers/autoresponder";
 import {
   getDBDescriptions,
   getDBImages,
-} from "../Util/Functions/managers/socialCommandsManager";
-import { MasterCleverbot } from "../Util/Functions/managers/cleverbotManager";
+} from "../Util/Functions/managers/littleManagers/socialCommandsManager";
+import { MasterCleverbot } from "../Util/Functions/managers/littleManagers/cleverbotManager";
+import { getDBChannel } from "../Util/Functions/managers/channelManager";
 
 const { prefix } = config;
 
@@ -20,13 +21,14 @@ export const run = async (bot, msg: Message) => {
   if (msg.channel.type !== "GUILD_TEXT") {
     return;
   } else if (name.includes("cleverbot") == true) {
-    MasterCleverbot(msg);
+    return MasterCleverbot(msg);
   }
 
   await getDBDescriptions();
   await getDBImages();
 
   await getDBUser(msg.author.id);
+  await getDBChannel(msg.channel.id);
   if (!msg.content.startsWith(prefix)) return;
   const message = new TempContext(bot, msg);
 

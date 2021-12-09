@@ -9,6 +9,7 @@ export const config = {
     auth_logs: process.env.AUTH_LOGS,
     auth_ratelimit_logs: process.env.AUTH_R_LOGS,
     auth_ratelimit2_logs: process.env.AUTH_RR_LOGS,
+    auth_api_imgs: process.env.API_IMGS,
   },
   prefix: "!",
   serverInvite: "discord.gg/",

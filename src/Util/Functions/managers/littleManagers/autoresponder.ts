@@ -24,10 +24,14 @@ export function spammer(message: Message) {
     message.content.toLowerCase().startsWith("d!hug") ||
     message.content.toLowerCase().startsWith("d!kiss") ||
     message.content.toLowerCase().startsWith("d!pat") ||
+    message.content.toLowerCase().startsWith("d!ride") ||
     message.content.toLowerCase().startsWith("furhug") ||
+    message.content.toLowerCase().startsWith("furride") ||
+    message.content.toLowerCase().startsWith("furfuck") ||
     message.content.toLowerCase().startsWith("furkiss") ||
     message.content.toLowerCase().startsWith("furpat") ||
-    message.content.toLowerCase().startsWith("furhug")
+    message.content.toLowerCase().startsWith("furhug") ||
+    message.content.toLowerCase().startsWith(",kiss")
   )
     return message.reply({
       embeds: [embed],

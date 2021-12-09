@@ -7,7 +7,7 @@ import {
   checkDescription,
   getFinalResult,
   getIntNumber1,
-} from "../../Util/Functions/managers/socialCommandsManager";
+} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
 import {
   addImage,
   checkImage,
@@ -15,14 +15,27 @@ import {
   getDBImages,
   getRandomCategorieImage,
   sortImages,
-} from "../../Util/Functions/managers/socialCommandsManager";
+} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
 import {
   parseEval,
   parseQuery,
   parseType,
   separeTexto,
 } from "../../Util/Functions/utils/textUtil";
-import { MasterCleverbot } from "../../Util/Functions/managers/cleverbotManager";
+import {
+  MasterCleverbot,
+  formatText,
+} from "../../Util/Functions/managers/littleManagers/cleverbotManager";
+import {
+  addSnipe,
+  constructMenu,
+  detectAndMoveImages,
+  detectAndMoveStickers,
+  detectEmbeds,
+  uploadImageToA,
+} from "../../Util/Functions/managers/littleManagers/snipeManager";
+import { getChannel } from "../../Util/Functions/utils/apiUtil";
+import { getDBChannel } from "../../Util/Functions/managers/channelManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -47,6 +60,15 @@ export default class NameCommand extends BaseCommand {
     const separe = separeTexto;
     const result = getFinalResult;
     const clrCore = MasterCleverbot;
+    const uplImg = uploadImageToA;
+    const upl = detectAndMoveImages;
+    const upt = detectAndMoveStickers;
+    const upy = detectEmbeds;
+    const format = formatText;
+    const addsnipe = addSnipe;
+    const getCh = getChannel
+    const dbchannel = getDBChannel
+    const constructmenu = constructMenu
     const { query, flags } = parseQuery(base.args);
 
     if (!query.length) return;

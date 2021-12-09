@@ -1,4 +1,4 @@
-import { Client, GuildMember, Message, User } from "discord.js";
+import { Channel, Client, GuildMember, Message, TextChannel, ThreadChannel, User, VoiceChannel } from "discord.js";
 import superagent from "superagent";
 import { findBestMatch } from "./generalUtil";
 
@@ -142,6 +142,63 @@ export async function getPerson(person: string, message: Message) {
 
   return persona;
 }
+
+/**
+ * @function getChannel Obtiene un canal del servidor
+ * @param {string} ID El ID del canal | Mención del canal | Nombre del canal.
+ * @param {Client} client El cliente de discord.
+ * @returns {Message | null} El canal o null si no se encuentra el canal.
+ * @example
+ * // Obtiene un canal del servidor.
+ * const channel = await getChannel("ID o Mención", client);
+ */
+
+export async function getChannel(channel: string, message: Message) {
+var canal: Channel | null;
+
+try {
+
+  // With discord mention.
+
+  if (channel.startsWith("<#") && channel.endsWith(">")) {
+    const id = channel.replace(/[<#>]/g, "");
+    const canall = await message.client.channels.fetch(id) as TextChannel | VoiceChannel | ThreadChannel;
+
+    canal = canall;
+
+
+    // Witch discord ID.
+  } else if (channel.match(/\d{16,22}$/gi)) {
+    const canall = await message.client.channels.fetch(channel) as TextChannel | VoiceChannel | ThreadChannel;
+
+    canal = canall;
+
+    // With channel name
+  } else if (channel.match(/^.{1,64}$/gi)) {
+    let mappingChannel = await message.client.channels.cache
+      .map((x) => x.name)
+      .filter(function (x) {
+        return x != null;
+      });
+    let similarFound = findBestMatch(channel, mappingChannel).bestMatch
+      .target;
+    let channelRegex = new RegExp(similarFound, "i");
+    let finale = await message.client.channels.cache.find((x) =>
+      channelRegex.test(x.name)
+        ? x.name === similarFound
+        : x.name === similarFound
+    ) as TextChannel | VoiceChannel | ThreadChannel;
+    canal = finale;
+  } else {
+    canal = null
+  }
+} catch (error) {
+  canal = null;
+}
+
+return canal
+}
+
 
 /**
  * @function SearchUser Busca un usuario en el servidor y en la API de discord.

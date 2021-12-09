@@ -2,13 +2,13 @@ import { Message, User } from "discord.js";
 import {
   descriptions,
   descriptionsModel,
-} from "../../../Database/schemas/descriptions";
-import { images, imagesModel } from "../../../Database/schemas/Images";
-import { imagesDB } from "../../constants/imagesDB";
-import { social, DBUser, userModel } from "../../../Database/schemas/User";
-import { getDBUser } from "./userManager";
-import { config } from "../../../config";
-import { getPerson } from "../utils/apiUtil";
+} from "../../../../Database/schemas/descriptions";
+import { images, imagesModel } from "../../../../Database/schemas/Images";
+import { imagesDB } from "../../../constants/imagesDB";
+import { social, DBUser, userModel } from "../../../../Database/schemas/User";
+import { getDBUser } from "../userManager";
+import { config } from "../../../../config";
+import { getPerson } from "../../utils/apiUtil";
 
 /**
  * @function checkImage - Checa si la imagen dada es válida.

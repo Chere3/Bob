@@ -97,7 +97,7 @@ export class BaseCommand {
       !owners.includes(msg.author.id)
     )
       return msg.channel.send(
-        e.setDescription(`❌ | Comando exclusivo para canales NSFW.`)
+        `Este comando solo puede ser usado en canales NSFW.`
       );
     if (
       msg.guild &&

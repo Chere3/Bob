@@ -5,7 +5,7 @@ import { imagesDB } from "../../Util/constants/imagesDB";
 import {
   addImage,
   addImages,
-} from "../../Util/Functions/managers/socialCommandsManager";
+} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

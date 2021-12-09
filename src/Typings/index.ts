@@ -26,6 +26,7 @@ declare global {
       AUTH_LOGS: string;
       AUTH_R_LOGS: string;
       AUTH_RR_LOGS: string;
+      API_IMGS: string;
     }
 
     interface Global {
