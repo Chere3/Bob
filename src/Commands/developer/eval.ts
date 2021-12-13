@@ -36,6 +36,7 @@ import {
 } from "../../Util/Functions/managers/littleManagers/snipeManager";
 import { getChannel } from "../../Util/Functions/utils/apiUtil";
 import { getDBChannel } from "../../Util/Functions/managers/channelManager";
+import { formatBans } from "../../Util/Functions/managers/littleManagers/listBanManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -69,6 +70,7 @@ export default class NameCommand extends BaseCommand {
     const getCh = getChannel
     const dbchannel = getDBChannel
     const constructmenu = constructMenu
+    const list = formatBans
     const { query, flags } = parseQuery(base.args);
 
     if (!query.length) return;

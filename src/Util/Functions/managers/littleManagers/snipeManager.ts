@@ -16,10 +16,15 @@ import { channelModel, snipes, DBChannel } from '../../../../Database/schemas/Ch
  */
 
 export async function detectAndMoveImages(message: Message) {
-  if (message.attachments.size == 0) return [];
+  if (message.attachments.size == 0 && message.embeds.length == 0) return [];
 
   var array = []
   const attachments = message.attachments.map(attachment => attachment);
+  const embeds = message.embeds.filter(embed => embed.type == "image");
+
+  for (const embed of embeds) {
+    array.push(embed.url);
+  }
 
     for (const attachment of attachments) {
         try {

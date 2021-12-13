@@ -50,6 +50,7 @@ TempoClient.login(config.auth.token).then((x) => {
   });
 });
 
+
 process.on("rejectionHandled", async (a) => {
   global.prettyConsole.error(a);
 

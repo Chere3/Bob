@@ -11,7 +11,7 @@ export const config = {
     auth_ratelimit2_logs: process.env.AUTH_RR_LOGS,
     auth_api_imgs: process.env.API_IMGS,
   },
-  prefix: "!",
+  prefix: "!!",
   serverInvite: "discord.gg/",
   owners: ["642159495660830740", "852588734104469535"],
 };
