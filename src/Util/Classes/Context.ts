@@ -36,6 +36,16 @@ export class TempContext {
     return this.message.member;
   }
 
+  l(content: string, link: string, disabled: boolean = false) {
+    const button = new MessageButton()
+      .setStyle(`LINK`)
+      .setLabel(content)
+      .setURL(`${link}`)
+      .setDisabled(disabled);
+
+    return button;
+  }
+
   b(
     type: MessageButtonStyle,
     content: string,

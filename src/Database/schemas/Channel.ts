@@ -24,6 +24,7 @@ export interface editsnipes {
   messageAuthorAvatar: string;
   messageContent: string;
   messageAttachments: string[];
+  messageLink: string;
   messageEmbeds: MessageEmbed[];
   messageTimestamp: number;
   messageStickers: string[];

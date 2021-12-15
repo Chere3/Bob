@@ -2,7 +2,8 @@ import { ButtonInteraction, Client, MessageEmbed, SelectMenuInteraction } from "
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
 import { getDBChannel } from "../../Util/Functions/managers/channelManager";
-import { combineAll, constructMenu } from "../../Util/Functions/managers/littleManagers/snipeManager";
+import { combineAll } from "../../Util/Functions/managers/littleManagers/snipeManager";
+import { constructMenu } from "../../Util/Functions/managers/littleManagers/editSnipeManager";
 import { getChannel } from "../../Util/Functions/utils/apiUtil";
 
 
@@ -43,7 +44,7 @@ async run(base: TempContext) {
                 if (mm.member.id !== base.message.member.id) return mm.reply({content: `Hey!, solo el autor del mensaje puede hacer esto.`, ephemeral: true})
 
                 const value = Number(mm.values[0]);
-                const archivos = combineAll(snipes[value].messageAttachments, snipes[value].messageStickers);
+                const archivos = snipes[value].messageAttachments
                if (!archivos.length) {
                    mm.update({embeds: [universalEmbed.setDescription(`${snipes[value].messageContent|| "ㅤ"}`).setAuthor(snipes[value].messageAuthor, snipes[value].messageAuthorAvatar).setTimestamp(snipes[value].messageTimestamp).setFooter(`Snipe ${value + 1}`)]});
                } else if (archivos.length == 1) {
@@ -116,15 +117,15 @@ async run(base: TempContext) {
     } else {
         const archivos = snipes[args - 1].messageAttachments
         if (!archivos.length) {
-            return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent|| "ㅤ"}`).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)]});
+            return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent|| "ㅤ"}`).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)], components: [base.ar(base.l(`Ir al mensaje`, snipes[args - 1].messageLink))]});
         } else if (archivos.length == 1) {
             if (archivos[0].includes(".mp4")) {
-                return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}\n\n**[Archivo](${archivos[0]})**`).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar)]});
+                return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}\n\n**[Archivo](${archivos[0]})**`).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar)], components: [base.ar(base.l(`Ir al mensaje`, snipes[args - 1].messageLink))]});
             }
-            return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}`).setImage(archivos[0]).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)]});
+            return base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}`).setImage(archivos[0]).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)], components: [base.ar(base.l(`Ir al mensaje`, snipes[args - 1].messageLink))]});
         } else if (archivos.length > 1) {
 
-            const m1 = await base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}`).setImage(archivos[0]).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)], components: [base.ar(base.b("PRIMARY", ">>", "right"), base.b("SECONDARY", "ㅤ", "aaa", true),base.b("SECONDARY", "ㅤ", "bbb", true), base.b("PRIMARY", "<<", "left"))]})
+            const m1 = await base.message.reply({embeds: [universalEmbed.setDescription(`${snipes[args - 1].messageContent || "ㅤ"}`).setImage(archivos[0]).setAuthor(snipes[args - 1].messageAuthor, snipes[args - 1].messageAuthorAvatar).setTimestamp(snipes[args - 1].messageTimestamp).setFooter(`Snipe ${args}`)], components: [base.ar(base.b("PRIMARY", ">>", "right"), base.b("SECONDARY", "ㅤ", "aaa", true),base.b("SECONDARY", "ㅤ", "bbb", true), base.b("PRIMARY", "<<", "left"), base.l(`Ir al mensaje`, snipes[args - 1].messageLink))]});
 
             const collector = [];
             for (let i = 0; i < archivos.length; i++) {

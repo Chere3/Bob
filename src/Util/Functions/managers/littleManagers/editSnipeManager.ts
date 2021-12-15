@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageActionRow, MessageSelectMenu } from "discord.js";
 import { getDBChannel } from "../channelManager";
 import { uploadImageToA } from "./snipeManager";
 import { checkImage } from "./socialCommandsManager";
@@ -106,6 +106,7 @@ export async function addSnipe(message: Message, editedMessage: Message) {
     messageAuthor: message.member.nickname || message.member.user.username,
     messageAuthorAvatar: message.author.avatarURL(),
     messageContent: message.content,
+    messageLink: `https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`,
     messageAttachments: attachments,
     messageEmbeds: embeds,
     messageTimestamp: message.createdTimestamp,
@@ -145,3 +146,33 @@ export async function editSnipeCore(message: Message, editedMessage: Message) {
   await deleteSnipe(message).catch((error) => console.log(error));
   return (await addSnipe(message, editedMessage)) as DBChannel;
 }
+
+export async function constructMenu(message: Message) {
+    const channel = await (await getDBChannel(message.channel.id)).editsnipes
+    const array = []
+
+
+    var page = 0;
+
+    for (const snipe of channel) {
+      page = page + 1
+      const valor = {
+        label: `${page} - ${snipe.messageAuthor}`,
+        description: `${snipe.messageContent?.slice(0, 30) || snipe.messageAttachments[0]?.slice(0, 30) || "."}... `,
+        value: `${page - 1}`
+      }
+
+      array.push(valor)
+    }
+
+    while (array.length > 24) {
+      array.pop()
+    }
+
+    const menu = new MessageSelectMenu().addOptions(array).setCustomId("si").setPlaceholder(`Selecciona un mensaje`)
+
+    const action = new MessageActionRow().addComponents(menu)
+
+    return action
+
+  }
