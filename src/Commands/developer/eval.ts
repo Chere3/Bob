@@ -37,6 +37,8 @@ import {
 import { getChannel } from "../../Util/Functions/utils/apiUtil";
 import { getDBChannel } from "../../Util/Functions/managers/channelManager";
 import { formatBans } from "../../Util/Functions/managers/littleManagers/listBanManager";
+import { db } from '../../index';
+import { getTestMode } from '../../Util/Functions/managers/littleManagers/cacheManager';
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -71,6 +73,8 @@ export default class NameCommand extends BaseCommand {
     const dbchannel = getDBChannel
     const constructmenu = constructMenu
     const list = formatBans
+    const test = getTestMode
+    const cache = db
     const { query, flags } = parseQuery(base.args);
 
     if (!query.length) return;

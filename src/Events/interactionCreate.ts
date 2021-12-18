@@ -5,8 +5,10 @@ import {
   Interaction,
   MessageEmbed,
 } from "discord.js";
+import { getTestMode } from "../Util/Functions/managers/littleManagers/cacheManager";
 
 export const run = async (client: Client, Interaction: Interaction) => {
+  if (getTestMode() == true) return;
   if (Interaction.isButton() == true) {
     const ww = Interaction as ButtonInteraction;
 

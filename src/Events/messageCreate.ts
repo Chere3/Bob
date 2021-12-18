@@ -9,10 +9,14 @@ import {
 } from "../Util/Functions/managers/littleManagers/socialCommandsManager";
 import { MasterCleverbot } from "../Util/Functions/managers/littleManagers/cleverbotManager";
 import { getDBChannel } from "../Util/Functions/managers/channelManager";
+import { getTestMode } from "../Util/Functions/managers/littleManagers/cacheManager";
 
-const { prefix } = config;
+var prefix  = config.prefix;
 
 export const run = async (bot, msg: Message) => {
+
+  if (getTestMode() == true) {prefix = "!!"}
+  
   spammer(msg);
   if (msg.author.bot) return;
 

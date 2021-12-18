@@ -1,6 +1,8 @@
 import { Client, MessageEmbed } from "discord.js";
 import superagent from "superagent";
+import { getTestMode } from '../Util/Functions/managers/littleManagers/cacheManager';
 export const run = async (bot: Client, debug: string) => {
+  if (getTestMode() == true) return;
   const embed = new MessageEmbed()
     .setAuthor(`Encendido logs.`)
     .setDescription(`\`\`\`fix\n ${debug}\`\`\``)

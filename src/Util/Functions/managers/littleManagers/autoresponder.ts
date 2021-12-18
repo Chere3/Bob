@@ -4,9 +4,11 @@ import {
   MessageButton,
   MessageEmbed,
 } from "discord.js";
+import { getTestMode } from "./cacheManager";
 
 export function spammer(message: Message) {
   if (message.author.bot) return;
+  if (getTestMode() == true) return;
 
   const embed = new MessageEmbed()
     .setAuthor(`¡Pruebame!`)

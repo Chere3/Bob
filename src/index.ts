@@ -5,6 +5,8 @@ import Captain from "captainjs";
 import login from "./Database/login";
 import "./Typings";
 import superagent from "superagent";
+import { JsonDB } from "node-json-db";
+import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 
 global.prettyConsole = new Captain.Console({
   use_colors: true,
@@ -43,6 +45,7 @@ TempoClient.commands = new Collection();
 TempoClient.cleverCooldown = new Collection();
 
 handlers(TempoClient);
+export var db = new JsonDB(new Config("cache", true, false, "/"));
 
 TempoClient.login(config.auth.token).then((x) => {
   login.then(() => {

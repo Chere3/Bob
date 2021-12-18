@@ -1,7 +1,9 @@
 import { Client, MessageEmbed, RateLimitError } from "discord.js";
 import superagent from "superagent";
+import { getTestMode } from "../Util/Functions/managers/littleManagers/cacheManager";
 
 export const run = async (client: Client, a: RateLimitError) => {
+  if (getTestMode() == true) return;
   const embed = new MessageEmbed()
     .setAuthor(`Error.`)
     .setDescription(`\`\`\`fix\n ${a.message}\`\`\``)
