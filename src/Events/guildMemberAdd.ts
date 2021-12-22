@@ -1,5 +1,7 @@
 import { Client, GuildMember, TextChannel, MessageEmbed } from 'discord.js';
+import { getTestMode } from '../Util/Functions/managers/littleManagers/cacheManager';
 export const run = async (bot: Client, member: GuildMember) => {
+    if (getTestMode() == true) return;
     if (member.guild.id !== "912858763126538281") return;
     if (member.user.bot) return;
 
