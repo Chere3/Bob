@@ -8,6 +8,7 @@ declare module "discord.js" {
     commands: Collection<string, BaseCommand>;
     slashCommands: Collection<string, BaseSlashCommand>;
     cleverCooldown: Collection<string, number>;
+    invitations: Collection<string, Invite>;
   }
 
   interface Channel {

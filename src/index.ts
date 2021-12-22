@@ -43,9 +43,10 @@ const TempoClient = new Client({
 TempoClient.slashCommands = new Collection();
 TempoClient.commands = new Collection();
 TempoClient.cleverCooldown = new Collection();
+TempoClient.invitations = new Collection();
 
 handlers(TempoClient);
-export var db = new JsonDB(new Config("cache", true, false, "/"));
+export var db = new JsonDB(new Config("cache", true, true, "/"));
 
 TempoClient.login(config.auth.token).then((x) => {
   login.then(() => {
