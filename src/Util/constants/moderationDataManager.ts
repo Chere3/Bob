@@ -8,6 +8,7 @@ export interface muted {
     reason: string
     time: number
     case: string
+    ExitedPeriod?: boolean
     mutedAt: number
     roles: string[]
 }

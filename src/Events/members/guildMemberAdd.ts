@@ -1,20 +1,22 @@
 import { Client, GuildMember, TextChannel, MessageEmbed } from 'discord.js';
 import { getTestMode } from '../../Util/managers/littleManagers/cacheManager';
+import { moderationUtil } from '../../Util/managers/moderationManager';
+import { sentry, transaction, db } from '../../index';
+import { CacheManager } from '../../Util/managers/cacheManager';
 export const run = async (bot: Client, member: GuildMember) => {
     if (getTestMode() == true) return;
     if (member.guild.id !== "912858763126538281") return;
     if (member.user.bot) return;
+    await db.getData("/")
 
     const channel = member.guild.channels.cache.find(x => x.id == "913254297557413958") as TextChannel;
     const verification = member.guild.channels.cache.find(x => x.id == "923061304376324096") as TextChannel;
     const welcomes = member.guild.channels.cache.find(x => x.id == "913254277881946173") as TextChannel;
     const logs  = member.guild.channels.cache.find(x => x.id == "913254279693864960") as TextChannel;
-    
-    
-
-
+    const cache = await new CacheManager(bot).get();
 
     
+
     setTimeout(async () => {
         const messages = await (await verification.messages.fetch()).map(x => x);
         var infoinv = messages.find(x => x.content.includes(member.user.id) && Date.now() - x.createdTimestamp < 60000);
@@ -22,6 +24,8 @@ export const run = async (bot: Client, member: GuildMember) => {
         const embed = new MessageEmbed().setAuthor(member.user.username, member.user.displayAvatarURL()).setDescription(`¡Bienvenido al servidor!, te recomiendo leer las <#913254283204493342>.\n\nPara ver otras partes del servidor es importante ponerte roles\n\nSi quieres ver todos los canales del servidor ve a <#913254282319511594>\n\nSí no puedes ver todos los canales es por que no has llenado todos los roles.\nㅤ`).setColor("PURPLE")
 
         const info = infoinv.content.split(" ");
+        
+    if (cache.muted.find(x => x.userID == member.id)) await new moderationUtil().roleMutedManagerInExit(member);
 
         if (info[0] == `vanity`) {
             infoinv = `Nadie (**discord.gg/${member.guild.vanityURLCode}**)` as any;
@@ -53,6 +57,8 @@ export const run = async (bot: Client, member: GuildMember) => {
     
     welcomes.send({embeds: [embeddd]});
     
-    }, 6000)
+}, 6000)
+
+    
     
 }

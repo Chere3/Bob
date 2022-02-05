@@ -293,6 +293,90 @@ roleMutedManager(member: GuildMember) {
     }
 }
 
+/**
+ * @function roleMutedManager - Manages the roles of the muted users
+ * @param {Member} member - The member to manage
+ * @returns {Promise<void>} - The data of the mute.
+ * @todo - Add a function to remove the role of the muted user
+ */
+
+ async roleMutedManagerInExit(member: GuildMember) {
+    await console.log("a")
+    const cache = member.client.cache.muted
+    const mute = await cache.find(x => x.userID == member.id);
+    const caca = [] as muted[];
+    for (const mute of cache) {
+        if (mute.userID == member.id) return;
+        caca.push(mute);
+    }
+
+    const muted = {
+        userID: member.id,
+        moderatorID: mute.moderatorID,
+        highestRole: mute.highestRole,
+        reason: mute.reason,
+        time: mute.time,
+        case: mute.case,
+        roles: mute.roles,
+        mutedAt: mute.mutedAt,
+        ExitedPeriod: true
+    } as muted;
+
+    caca.unshift(muted);
+    await db.push("/muted", caca);
+
+
+    managerError;
+    try {
+    const roles = await member.roles.cache.map(x => x);
+
+
+    const roless = await [];
+    for (const role of roles) {
+        roless.push(role)
+        member.roles.remove(role.id, `El usuario ha salido del servidor mientras estaba muteado.`);
+    }
+
+    const muteado = await member.guild.roles.cache.find(r => r.name == "Silenciado");
+    await member.roles.add(muteado.id);
+
+
+    const cacca = [] as muted[];
+    for (const mute of cache) {
+        if (mute.userID == member.id) return;
+        cacca.push(mute);
+    }
+
+    
+    const mutedd = {
+        userID: member.id,
+        moderatorID: mute.moderatorID,
+        highestRole: mute.highestRole,
+        reason: mute.reason,
+        time: mute.time,
+        case: mute.case,
+        roles: mute.roles,
+        mutedAt: mute.mutedAt
+    } as muted;
+
+    await caca.unshift(mutedd);
+    await db.push("/muted", cacca);
+
+    if (member.roles.cache.map(x => x.id !== muteado.id)[0] !== undefined) {
+        this.roleMutedManagerInExit(member);
+    }
+
+
+
+    return roless as Role[];
+    } catch (error) {
+        sentry.captureException(error);
+        this.roleMutedManagerInExit(member);
+    } finally {
+        managerError.finish()
+    }
+}
+
 
 
 

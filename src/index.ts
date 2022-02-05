@@ -81,7 +81,7 @@ export const managerError = Sentry.startTransaction({
 
 
 handlers(TempoClient);
-export var db = new JsonDB(new Config("cache", true, false, "/"));
+export var db = new JsonDB(new Config("cache", true, true, "/"));
 
 TempoClient.login(config.auth.token).then((x) => {
   login.then(() => {

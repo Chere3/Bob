@@ -1,7 +1,12 @@
 import { Client, GuildMember, TextChannel } from 'discord.js';
 export const run = async (client: Client, oldMember: GuildMember, newMember: GuildMember) => {
+    
+    if (newMember.joinedTimestamp - Date.now() < 10000) return;
     const cache = client.cache;
-    if (cache.muted.find(x => x.userID == newMember.id) == undefined) return;
+    const a = cache.muted.find(x => x.userID == newMember.id);
+    if (a == undefined) return;
+    if (a.ExitedPeriod == true) return;
+    
     // detects if the new member get new roles
     if (oldMember.roles.cache.size < newMember.roles.cache.size) {
         const newRole = newMember.roles.cache.filter(r => !oldMember.roles.cache.has(r.id)).first();
