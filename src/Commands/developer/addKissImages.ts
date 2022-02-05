@@ -4,7 +4,7 @@ import { TempContext } from "../../Util/Classes/Context";
 import {
   addImage,
   addImages,
-} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
+} from "../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

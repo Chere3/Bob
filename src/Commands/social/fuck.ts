@@ -4,7 +4,7 @@ import { TempContext } from "../../Util/Classes/Context";
 import {
   getD,
   getFinalResult,
-} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
+} from "../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -13,6 +13,7 @@ export default class NameCommand extends BaseCommand {
       description: "cogete a alguien con este comando.",
       aliases: ["fucks", "ass", "coger", "ride"],
       category: "social",
+      cooldown: 10,
       nsfw: true,
     });
   }
@@ -37,7 +38,7 @@ export default class NameCommand extends BaseCommand {
         `${a.userS.username} lleva ${a.user} cogidas recibidas.`,
         a.userS.displayAvatarURL()
       )
-      .setColor("ORANGE");
+      .setColor("PURPLE");
 
     return base.message.reply({ embeds: [embed] });
   }

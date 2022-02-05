@@ -2,13 +2,16 @@ import { Collection } from "discord.js";
 import { BaseCommand } from "../Util/Classes/BaseCommand";
 import Captain from "captainjs";
 import { BaseSlashCommand } from "../Util/Classes/BaseSlashCommand";
+import { cache } from '../Util/constants/cache';
 
 declare module "discord.js" {
   interface Client {
     commands: Collection<string, BaseCommand>;
     slashCommands: Collection<string, BaseSlashCommand>;
     cleverCooldown: Collection<string, number>;
+    cooldoown: Collection<string, number>;
     invitations: Collection<string, Invite>;
+    cache: cache
   }
 
   interface Channel {
@@ -21,6 +24,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       TOKEN: string;
+      SENTRY: string;
       MONGO_URI: string;
       MONGO_URI2: string;
       MONGO_API: string;

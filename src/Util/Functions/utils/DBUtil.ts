@@ -13,7 +13,7 @@ import { userModel, DBUser } from "../../../Database/schemas/User";
  * getDB(table)
  */
 
-export async function getUserDB(id: string) {
+export async function getUserDB(id: string): Promise<DBUser> {
   const aaa = await userModel.findOne({ id: id }).catch((err) => {});
 
   if (aaa) {

@@ -99,3 +99,23 @@ export function areArgsValid(mainString: string, targetStrings: string[]) {
     return false;
   return true;
 }
+
+
+/**
+ * @method separateArray | Separa un array en varios arrays de un tamaño dado.
+ * @param {string[]} array | Array a separar.
+ * @param {number} size | Tamaño de cada array.
+ * @return {string[]} Los arrays separados.
+ */
+
+export function separateArray(array: any[], size: number) {
+  if (!Array.isArray(array)) throw TypeError(`El primer argumento debe ser un array.`);
+  if (typeof size !== "number") throw TypeError(`El segundo argumento debe ser un número.`);
+  if (size < 1) throw TypeError(`El segundo argumento debe ser mayor que 0.`);
+
+  let result: any[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}

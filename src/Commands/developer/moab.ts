@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
-import { moab } from "../../Util/Functions/managers/littleManagers/snipeManager";
+import { moab } from "../../Util/managers/littleManagers/snipeManager";
 
 
 export default class NameCommand extends BaseCommand {

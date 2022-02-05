@@ -2,7 +2,7 @@ import { Client } from "discord.js";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
 import { imagesDB } from "../../Util/constants/imagesDB";
-import { addImage } from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
+import { addImage } from "../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

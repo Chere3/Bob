@@ -7,6 +7,12 @@ import "./Typings";
 import superagent from "superagent";
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
+import { cache } from './Util/constants/cache';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
+const {version} = require('../package.json');
+
+export const sentry = Sentry; 
 
 global.prettyConsole = new Captain.Console({
   use_colors: true,
@@ -42,100 +48,63 @@ const TempoClient = new Client({
 
 TempoClient.slashCommands = new Collection();
 TempoClient.commands = new Collection();
-TempoClient.cleverCooldown = new Collection();
 TempoClient.invitations = new Collection();
+TempoClient.cooldoown = new Collection();
+
+
+
+////////// SENTRY /////////////
+
+Sentry.init({
+  dsn: process.env.SENTRY,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Mongo({
+      useMongoose: true
+    })
+  ],
+  tracesSampleRate: 1.0,
+  debug: true,
+  release: version,
+});
+
+export const transaction = Sentry.startTransaction({
+  op: "commandError",
+  name: "commandError",
+});
+
+export const managerError = Sentry.startTransaction({
+  op: "managerError",
+  name: "managerError",
+});
+///////////////////////////////////////////////////
+
 
 handlers(TempoClient);
-export var db = new JsonDB(new Config("cache", true, true, "/"));
+export var db = new JsonDB(new Config("cache", true, false, "/"));
 
 TempoClient.login(config.auth.token).then((x) => {
   login.then(() => {
     global.prettyConsole.log(`La base de datos 1 esta lista.`);
   });
 });
+TempoClient.cache = db.getData("/") as cache;
 
 
 process.on("rejectionHandled", async (a) => {
-  global.prettyConsole.error(a);
-
-  const embed = new MessageEmbed()
-    .setAuthor(`Error.`)
-    .setDescription(`\`\`\`fix\n ${a}\`\`\``)
-    .setTimestamp()
-    .setColor("RED");
-  await superagent
-    .post(process.env.AUTH_LOGS)
-    .send({ embeds: [embed] })
-    .catch(async () => {
-      await superagent
-        .post(process.env.AUTH_R_LOGS)
-        .send({ embeds: [embed] })
-        .catch(async () => {
-          await superagent
-            .post(process.env.AUTH_RR_LOGS)
-            .send({ embeds: [embed] })
-            .catch(() => {
-              console.log(
-                `No pude enviar el mensaje de la webhook debido a un error.`
-              );
-            });
-        });
-    });
+  const aa = await a;
+  await sentry.captureException(aa);
 });
 
 process.on("uncaughtException", async (a) => {
+  transaction;
   global.prettyConsole.error(a.name);
   global.prettyConsole.error(a.message);
-  console.log(a.stack);
-
-  const embed = new MessageEmbed()
-    .setAuthor(`Error.`)
-    .setDescription(`\`\`\`fix\n ${a.name}\`\`\``)
-    .setTimestamp()
-    .setColor("RED");
-  await superagent
-    .post(process.env.AUTH_LOGS)
-    .send({ embeds: [embed] })
-    .catch(async () => {
-      await superagent
-        .post(process.env.AUTH_R_LOGS)
-        .send({ embeds: [embed] })
-        .catch(async () => {
-          await superagent
-            .post(process.env.AUTH_RR_LOGS)
-            .send({ embeds: [embed] })
-            .catch(() => {
-              console.log(
-                `No pude enviar el mensaje de la webhook debido a un error.`
-              );
-            });
-        });
-    });
+  sentry.captureException(a);
+  transaction.finish();
 });
 
 process.on("unhandledRejection", async (a) => {
   global.prettyConsole.error(a);
-  const embed = new MessageEmbed()
-    .setAuthor(`Error.`)
-    .setDescription(`\`\`\`fix\n ${a}\`\`\``)
-    .setTimestamp()
-    .setColor("RED");
-  await superagent
-    .post(process.env.AUTH_LOGS)
-    .send({ embeds: [embed] })
-    .catch(async () => {
-      await superagent
-        .post(process.env.AUTH_R_LOGS)
-        .send({ embeds: [embed] })
-        .catch(async () => {
-          await superagent
-            .post(process.env.AUTH_RR_LOGS)
-            .send({ embeds: [embed] })
-            .catch(() => {
-              console.log(
-                `No pude enviar el mensaje de la webhook debido a un error.`
-              );
-            });
-        });
-    });
 });
+

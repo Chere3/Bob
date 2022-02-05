@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
-import { addDescription } from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
+import { addDescription } from "../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

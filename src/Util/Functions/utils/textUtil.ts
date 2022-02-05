@@ -46,7 +46,7 @@ export function parseQuery(queries: string[]) {
   const flags = [];
 
   for (const args of queries) {
-    if (args.startsWith("&")) {
+    if (args.startsWith("#")) {
       flags.push(args.slice(2).toLowerCase());
     } else {
       query.push(args);
