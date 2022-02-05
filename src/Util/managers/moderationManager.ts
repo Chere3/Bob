@@ -1723,4 +1723,78 @@ export class banManager extends moderationUtil {
         }
         
     }
+
+    /**
+     * @method softban - Softban the member.
+     * @param {string} id - ID of the member.
+     * @param {number} days - Days to delete the messages.
+     */
+
+    async softban(userID: string, days: number) {
+        if (this.force == false) {
+            if (!this.member) throw Error(`El usuario que has puesto no existe.`);
+            if (!this.moderator) throw Error(`He detectado una corrupción de tipo __PPP_USER_AUTHOR_MEMBER_ por favor contecta con mi desarrollador para informar de este error.`);
+            if (this.member.roles.cache.has(`913123943072813096`)) throw Error(`No puedes softbanear a un usuario que es creador del servidor.`);
+            if (this.member.id == this.member.guild.ownerId) throw Error(`No puedes softbanear a un usuario que es el dueño del servidor.`);
+            if (this.member.id == this.moderator.id) throw Error(`No puedes softbanear a ti mismo tonto.`);
+        }
+
+        const history = await new historialManager(null, userID, null, this.case, null, Date.now(), null, this.moderator.guild.id, null, null).getHistorial();
+        const now = Date.now();
+
+        const ban = {
+            id: userID,
+            at: now,
+            moderator: this.moderator.id,
+            reason: this.reason,
+            case: this.case,
+        } as ban;
+
+        const unban = {
+            id: userID, 
+            moderator: this.moderator.id,
+            reason: this.reason,
+            case: this.case,
+            type: "unban",
+            at: now
+        } as globalAction;
+
+        const bann = {
+            id: userID,
+            at: now,
+            moderator: this.moderator.id,
+            reason: this.reason,
+            case: this.case,
+            type: "ban"
+        } as globalAction;
+
+        const a = [] as globalAction[];
+        const b = [] as ban[];
+
+        for (const q of history.all) {
+            a.push(q);
+        }
+
+        for (const q of history.bans) {
+            b.push(q);
+        }
+
+        a.unshift(bann, unban);
+        b.unshift(ban)
+
+
+        managerError
+        try {
+            await historialModel.findOneAndUpdate({id: this.moderator.guild.id}, {all: a, bans: b});
+            await new moderationBotLogs(this.member, this.moderator, this.reason, this.case).sendSoftBanLog();
+            await this.moderator.guild.members.ban(userID, {days: days, reason: `${this.moderator.user.tag}: ${this.reason}`});
+            await this.moderator.guild.members.unban(userID, `${this.moderator.user.tag}: ${this.reason ?? "Sin razón"}`);
+            
+            return ban;
+        } catch (e) {
+            sentry.captureException
+        } finally {
+            managerError.finish()
+        }
+    }
 }

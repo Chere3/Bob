@@ -356,5 +356,40 @@ export class moderationBotLogs extends logsManager {
             managerError.finish();
         }
     }
+
+    /**
+     * @method Metodo encargado de mandarle un mensaje al md al usuario cuando este es softbaneado
+     */
+
+    async sendDMSoftbanLog() {
+        managerError;
+        try {
+        const channel = this.member;
+        return channel.send(`**__Has sido softbaneado en ${this.member.guild.name}__**\n${emojis.razon} __**Razón:**__ ${this.reason}\n${emojis.status_activo} **__ID de caso:__** ${this.case}\n\nTranquilo, muchas veces esto es solo para eliminar muchos mensajes tuyos, aqui tienes la invitación:\nhttps://discord.gg/fyp`).catch(() => {});
+        } catch (error) {
+            sentry.captureException(error);
+        } finally {
+            managerError.finish();
+        }
+    }
+
+    /**
+     * @method Metodo encargado de mandar un log cuando un usuario es softbaneado
+     */
+
+    async sendSoftBanLog() {
+        managerError;
+        try {
+        const channel = this.member.guild.channels.cache.find(c => c.name === "🦝︰cheree_sandbox") as TextChannel;
+        const embed = new MessageEmbed().setAuthor({name: `${this.moderator.displayName}${this.moderator.user.discriminator} ( ${this.moderator.id} )`, iconURL: await avatar(this.moderator)}).setDescription(`🔈 _**Ha softbaneado a:**_ \`${this.member.user.tag}\` ( ${this.member.id} )\n${emojis.razon} __**Razón:**__: ${this.reason}\n${emojis.zwo_viendo} __**ID de caso:**__\n \`\`\`fix\n${this.case}\`\`\``).setTimestamp().setThumbnail(await avatar(this.member)).setColor("RED");
+        await this.sendDMSoftbanLog();
+        return channel.send({embeds: [embed]});
+        } catch (error) {
+            sentry.captureException(error);
+        } finally {
+            managerError.finish();
+        }
+    }
+
 }
 
