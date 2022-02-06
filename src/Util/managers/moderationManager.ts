@@ -270,108 +270,36 @@ timeConvert(time: string) {
  * @todo - Add a function to remove the role of the muted user
  */
 
-roleMutedManager(member: GuildMember) {
+async roleMutedManager(member: GuildMember) {
+    console.log("a")
     managerError;
     try {
     const roles = member.roles.cache.map(x => x);
 
 
+    await member.roles.add(`913124108512931861`);
     const roless = [];
     for (const role of roles) {
         roless.push(role)
-        member.roles.remove(role.id);
+        await member.roles.remove(role.id, "Roles quitados después de que el usuario fue muteado.");
     }
 
-    const muteado = member.guild.roles.cache.find(r => r.name == "Silenciado");
-    member.roles.add(muteado.id);
 
-    return roless as Role[];
-    } catch (error) {
-        sentry.captureException(error);
-    } finally {
-        managerError.finish()
-    }
-}
+    
 
-/**
- * @function roleMutedManager - Manages the roles of the muted users
- * @param {Member} member - The member to manage
- * @returns {Promise<void>} - The data of the mute.
- * @todo - Add a function to remove the role of the muted user
- */
-
- async roleMutedManagerInExit(member: GuildMember) {
-    await console.log("a")
-    const cache = member.client.cache.muted
-    const mute = await cache.find(x => x.userID == member.id);
-    const caca = [] as muted[];
-    for (const mute of cache) {
-        if (mute.userID == member.id) return;
-        caca.push(mute);
+    if (member.roles.cache.map(x => x).length > 1) {
+        await member.roles.add(`913124108512931861`);
     }
 
-    const muted = {
-        userID: member.id,
-        moderatorID: mute.moderatorID,
-        highestRole: mute.highestRole,
-        reason: mute.reason,
-        time: mute.time,
-        case: mute.case,
-        roles: mute.roles,
-        mutedAt: mute.mutedAt,
-        ExitedPeriod: true
-    } as muted;
-
-    caca.unshift(muted);
-    await db.push("/muted", caca);
-
-
-    managerError;
-    try {
-    const roles = await member.roles.cache.map(x => x);
-
-
-    const roless = await [];
-    for (const role of roles) {
-        roless.push(role)
-        member.roles.remove(role.id, `El usuario ha salido del servidor mientras estaba muteado.`);
-    }
-
-    const muteado = await member.guild.roles.cache.find(r => r.name == "Silenciado");
-    await member.roles.add(muteado.id);
-
-
-    const cacca = [] as muted[];
-    for (const mute of cache) {
-        if (mute.userID == member.id) return;
-        cacca.push(mute);
+    if (member.roles.cache.map(x => x).length == 0) {
+        await member.roles.add(`913124108512931861`);
     }
 
     
-    const mutedd = {
-        userID: member.id,
-        moderatorID: mute.moderatorID,
-        highestRole: mute.highestRole,
-        reason: mute.reason,
-        time: mute.time,
-        case: mute.case,
-        roles: mute.roles,
-        mutedAt: mute.mutedAt
-    } as muted;
-
-    await caca.unshift(mutedd);
-    await db.push("/muted", cacca);
-
-    if (member.roles.cache.map(x => x.id !== muteado.id)[0] !== undefined) {
-        this.roleMutedManagerInExit(member);
-    }
-
-
 
     return roless as Role[];
     } catch (error) {
         sentry.captureException(error);
-        this.roleMutedManagerInExit(member);
     } finally {
         managerError.finish()
     }
