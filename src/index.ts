@@ -43,7 +43,7 @@ const TempoClient = new Client({
     "GUILD_VOICE_STATES",
     "GUILD_WEBHOOKS",
   ],
-  allowedMentions: { repliedUser: false, parse: ["users"] },
+  allowedMentions: { repliedUser: false, parse: ["users", "roles"] },
 });
 
 TempoClient.slashCommands = new Collection();
@@ -81,7 +81,7 @@ export const managerError = Sentry.startTransaction({
 
 
 handlers(TempoClient);
-export var db = new JsonDB(new Config("cache", true, true, "/"));
+export var db = new JsonDB(new Config("cache", true, false, "/"));
 
 TempoClient.login(config.auth.token).then((x) => {
   login.then(() => {

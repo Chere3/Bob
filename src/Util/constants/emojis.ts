@@ -14,5 +14,6 @@ export const emojis= {
     zdo_tonto: `<:zd_tonto:925583704963825685>`,
     rs_palomita: `<:rs_palomita:929486617230581782>`,
     rs_x: `<:rs_cruz:929486289097601165>`,
-    internal_error: "<a:error:938290447590236251>"
+    internal_error: "<a:error:938290447590236251>",
+    separador: "<a:rs_separador:940465333939109898>",
 }
