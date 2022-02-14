@@ -1,6 +1,6 @@
 import { detectAndMoveEmbeds } from "../managers/littleManagers/editSnipeManager";
 import { addSnipe, constructMenu, detectAndMoveImages, detectAndMoveStickers, uploadImageToA } from "../managers/littleManagers/snipeManager";
-import { addImage, checkDescription, checkImage, getDBDescriptions, getDBImages, getFinalResult, getIntNumber1, getRandomCategorieImage, sortImages } from "../managers/littleManagers/socialCommandsManager";
+import { addImage, checkDescription, checkImage, deleteImage, getDBDescriptions, getDBImages, getFinalResult, getIntNumber1, getRandomCategorieImage, sortImages } from "../managers/littleManagers/socialCommandsManager";
 import { imagesModel } from '../../Database/schemas/Images';
 import { separeTexto } from '../Functions/utils/textUtil';
 import { separateArray } from '../Functions/utils/generalUtil';
@@ -14,6 +14,7 @@ import { db } from '../../index';
 import { CacheManager } from '../managers/cacheManager';
 import { checkLevel, Translatetime } from './globals';
 import { inspect } from "util";
+import discord from "discord.js";
 
 export const snipeUtil = {
     checkImages: checkImage,
@@ -33,21 +34,25 @@ export const socialCommandUtil = {
     getDesc: getDBDescriptions,
     getNumber: getIntNumber1,
     checkDescription: checkDescription,
-    final: getFinalResult
+    final: getFinalResult,
+    deleteImage: deleteImage
 }
 
 export const textUtil = {
     separeText: separeTexto,
     separeArray: separateArray,
     constructMenu: constructMenu,
-    inspect: inspect
+    inspect: inspect,
+    discord: discord
 }
 
 export const dbUtil = {
     getChannel: getChannel,
     getDBChannel: getDBChannel,
     getUser: getUserDB,
-    userModel: userModel
+    getDBImages: getDBImages,
+    userModel: userModel,
+    imagesModel: imagesModel,
 }
 
 export const moderationutil = {

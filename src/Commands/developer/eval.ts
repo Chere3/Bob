@@ -72,11 +72,11 @@ export default class NameCommand extends BaseCommand {
       return base.channel.send({ embeds: [embed] });
     } catch (error) {
       if (error.length > 6000) {
-        separeTexto(error, 5000).map((x) => {
-          base.channel.send({
-            embeds: [embed.setDescription(`\`\`\`javascript\n${x}\`\`\``)],
-          });
-        });
+        const text = separeTexto(error, 5000);
+        const embeds = []
+        for (const error of text) {
+          embeds.push(new MessageEmbed().setDescription(`\`\`\`js\n${error}\`\`\``));
+        }
       } else {
         embed.setDescription("```js\n" + error + "```");
       }

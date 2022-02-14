@@ -1,4 +1,4 @@
-import { Collection, Client, MessageEmbed } from "discord.js";
+import { Collection, Client, MessageEmbed, Options } from "discord.js";
 import { config } from "./config";
 import { handlers } from "./Util/Functions/handlers";
 import Captain from "captainjs";
@@ -44,6 +44,8 @@ const TempoClient = new Client({
     "GUILD_WEBHOOKS",
   ],
   allowedMentions: { repliedUser: false, parse: ["users", "roles"] },
+  partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"],
+  makeCache: Options.cacheEverything()
 });
 
 TempoClient.slashCommands = new Collection();

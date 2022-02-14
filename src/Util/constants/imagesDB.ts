@@ -53,4 +53,11 @@ export interface file {
   url: string
 }
 
+export interface deletedImageData {
+  name: string
+  category: string
+  filteredData: string[]
+  sizeOfArray: number
+}
+
 

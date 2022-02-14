@@ -4,7 +4,7 @@ import {
   descriptionsModel,
 } from "../../../Database/schemas/descriptions";
 import { images, imagesModel } from "../../../Database/schemas/Images";
-import { imagesDB } from "../../constants/imagesDB";
+import { deletedImageData, imagesDB } from "../../constants/imagesDB";
 import { social, DBUser, userModel } from "../../../Database/schemas/User";
 import { getDBUser } from "../userManager";
 import { config } from "../../../config";
@@ -316,9 +316,9 @@ export async function addImages(imagesURL: string[], imageType: imagesDB) {
   if (imagesDB.find((x) => x == imageType) == undefined)
     throw new Error("El tipo de imagen no es válido.");
 
-  await imagesURL.map(async (x) => {
-    await checkImage(x);
-  });
+  for (const image of imagesURL) {
+    await checkImage(image);
+  }
 
   const imagenes = (await imagesModel.findOne({ id: "first" })) as images;
 
@@ -1014,6 +1014,31 @@ export async function getIntNumber1(id: string, type: imagesDB) {
     ) as any;
     return (await a).social.sucks;
   }
+}
+
+/**
+ * @function deleteImage - Deletes an image from the database
+ * @param {string} URL - The URL of the image to be deleted
+ * @returns {Promise<Op>}
+ */
+
+export async function deleteImage(URL: string) {
+  const data = await getDBImages();
+  const keys = Object.keys(Object.values(data)[5]); var a; var b;
+  for (let key of keys) {
+    if (data[key].constructor.name == "CoreMongooseArray" && data[key].find(x => x == URL)) {
+      a = (data[key].filter(x => x !== URL)); b = key;
+    }
+    }
+
+    if (!a && !b) throw Error(`El link que has puesto no se ha encontrado en ninguna parte de la base de datos.`);
+    imagesModel.findOneAndUpdate({id: "first"}, {b: a})
+    return {
+      name: URL,
+      category: b,
+      filteredData: a,
+      sizeOfArray: a.length
+    } as deletedImageData
 }
 
 /**
