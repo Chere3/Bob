@@ -112,6 +112,36 @@ export default class NameCommand extends BaseCommand {
         } else if (aa.customId == "no") {
           aa.update({embeds: [embed.setDescription(`> __**Cancelado**__`).setImage(null).setAuthor(null).setFooter(null)]});
         }})
+    } else {
+      if (!base.args[0]) return base.message.reply(`> __**Debes de especificar la categoría a la que quieres que la imagen se agregue.**__`);
+      if (!base.args[1] && !base.message.attachments.first()) return base.message.reply(`> __**Debes de especificar la imagen que quieres agregar.**__`);
+      const image = base?.args[1] ?? base.message.attachments.first()?.proxyURL;
+
+      const embed = new MessageEmbed().setAuthor({name: `¿Deseas agregar esta imagen a la base de datos?`}).setColor(`PURPLE`).setImage(base.args[1]);
+      const m1 = await base.message.reply({embeds: [embed], components: [base.ar(base.b("SECONDARY", "yes", "yes", false, emojis.rs_palomita), base.b("SECONDARY", "no", "no", false, emojis.rs_x))]});
+      const m2 = await m1.createMessageComponentCollector({componentType: "BUTTON", time: 60000, filter: (a) => a.member.id == base.message.author.id});
+
+      m2.on("collect", async (aa) => {
+
+        if (aa.customId == "yes") {
+          transaction;
+          try {
+            await addImage(base.args[1], base.args[0] as imagesDB);
+            aa.update({embeds: [embed.setDescription(`> __**Agregada la imagen correctamente.**__`)]});
+          } catch (e) {
+            if (!String(e).startsWith(`Error:`)) {
+              sentry.captureException(e);
+              aa.update({embeds: [embed.setColor(`DARK_RED`).setDescription(`> __**${base._INTERNAL_E_TEXT}**__`)]});
+              transaction.finish();
+            }
+
+            aa.update({embeds: [embed.setDescription(`> __**${String(e).slice(6)}**__`)]});
+          }
+        } else if (aa.customId == "no") {
+          aa.update({embeds: [embed.setDescription(`> __**Cancelado**__`).setImage(null).setAuthor(null).setFooter(null)]});
+        }})
+
     }
   }
 }
+  
