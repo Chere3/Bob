@@ -3,6 +3,7 @@ import { BaseCommand } from "../Util/Classes/BaseCommand";
 import Captain from "captainjs";
 import { BaseSlashCommand } from "../Util/Classes/BaseSlashCommand";
 import { cache } from '../Util/constants/cache';
+import { allUtil } from "../Util/constants/evalUtil";
 
 declare module "discord.js" {
   interface Client {
@@ -11,7 +12,8 @@ declare module "discord.js" {
     cleverCooldown: Collection<string, number>;
     cooldoown: Collection<string, number>;
     invitations: Collection<string, Invite>;
-    cache: cache
+    all: any;
+    cache: cache;
   }
 
   interface Channel {

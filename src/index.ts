@@ -10,6 +10,7 @@ import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import { cache } from './Util/constants/cache';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import { allUtil } from "./Util/constants/evalUtil";
 const {version} = require('../package.json');
 
 export const sentry = Sentry; 
@@ -52,7 +53,7 @@ TempoClient.slashCommands = new Collection();
 TempoClient.commands = new Collection();
 TempoClient.invitations = new Collection();
 TempoClient.cooldoown = new Collection();
-
+TempoClient.all = allUtil;
 
 
 ////////// SENTRY /////////////

@@ -1051,6 +1051,13 @@ export async function deleteImage(URL: string) {
  * @author Cheree
  * @version 1.0.0
  */
+export interface finalSocialCommand {
+  description: string;
+  image: string;
+  userS: User;
+  user: number;
+  author: DBUser;
+}
 
 export async function getFinalResult(message: Message, type: imagesDB) {
   const description = await getD(message, type);
@@ -1058,13 +1065,7 @@ export async function getFinalResult(message: Message, type: imagesDB) {
   const number2 = await getIntNumber1(description.user.id, type);
   const authorDB = await getDBUser(message.author.id);
 
-  interface finalSocialCommand {
-    description: string;
-    image: string;
-    userS: User;
-    user: number;
-    author: DBUser;
-  }
+  
 
   const finalSocialCommand = {
     description: description.desc,
