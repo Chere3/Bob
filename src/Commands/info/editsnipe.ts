@@ -1,9 +1,9 @@
 import { ButtonInteraction, Client, MessageEmbed, SelectMenuInteraction } from "discord.js";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
-import { getDBChannel } from "../../Util/Functions/managers/channelManager";
-import { combineAll } from "../../Util/Functions/managers/littleManagers/snipeManager";
-import { constructMenu } from "../../Util/Functions/managers/littleManagers/editSnipeManager";
+import { getDBChannel } from "../../Util/managers/channelManager";
+import { combineAll } from "../../Util/managers/littleManagers/snipeManager";
+import { constructMenu } from "../../Util/managers/littleManagers/editSnipeManager";
 import { getChannel } from "../../Util/Functions/utils/apiUtil";
 
 
@@ -24,8 +24,6 @@ async run(base: TempContext) {
     const universalEmbed = new MessageEmbed().setColor("ORANGE");
 
     var args = Number(base.args[0]) || Number(base.args[1]) || 1;
-
-
 
     if (isNaN(Number(base.args[0]))) {
 

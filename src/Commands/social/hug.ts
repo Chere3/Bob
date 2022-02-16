@@ -4,7 +4,7 @@ import { TempContext } from "../../Util/Classes/Context";
 import {
   getD,
   getFinalResult,
-} from "../../Util/Functions/managers/littleManagers/socialCommandsManager";
+} from "../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
@@ -12,6 +12,7 @@ export default class NameCommand extends BaseCommand {
       name: "hug",
       description: "Abraza a alguien con este comando.",
       category: "social",
+      cooldown: 10,
     });
   }
 
@@ -35,7 +36,7 @@ export default class NameCommand extends BaseCommand {
         `${a.userS.username} lleva ${a.user} abrazos recibidos.`,
         a.userS.displayAvatarURL()
       )
-      .setColor("ORANGE");
+      .setColor("PURPLE");
 
     return base.message.reply({ embeds: [embed] });
   }

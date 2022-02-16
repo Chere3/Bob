@@ -5,6 +5,7 @@ envconfig();
 export const config = {
   auth: {
     token: process.env.TOKEN,
+    sentry: process.env.SENTRY,
     mongoURI: process.env.MONGO_URI,
     auth_logs: process.env.AUTH_LOGS,
     auth_ratelimit_logs: process.env.AUTH_R_LOGS,
@@ -13,5 +14,5 @@ export const config = {
   },
   prefix: "!",
   serverInvite: "discord.gg/",
-  owners: ["642159495660830740", "852588734104469535"],
+  owners: ["852588734104469535", `761293862882508800`],
 };

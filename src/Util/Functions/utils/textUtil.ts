@@ -46,7 +46,7 @@ export function parseQuery(queries: string[]) {
   const flags = [];
 
   for (const args of queries) {
-    if (args.startsWith("&")) {
+    if (args.startsWith("#")) {
       flags.push(args.slice(2).toLowerCase());
     } else {
       query.push(args);
@@ -111,4 +111,39 @@ export function parseType(query) {
   return query === null || query === undefined
     ? "void"
     : query.constructor.name;
+}
+
+/**
+ * @method timeDiference Calcula la diferencia de tiempo entre dos fechas y las pone en tiempo relativo
+ * @param {Date} date1
+ * @param {Date} date2
+ * @returns {string}
+ * @example
+ * timeDiference(Date.now(), 23981083921839132)
+ */
+
+export function timeDifference(time1: number, time2: number) {
+  var second = 1000;
+  var minute = second * 60;
+  var hour = minute * 60;
+  var day = hour * 24;
+  var week = day * 7;
+  var month = day * 30;
+  var year = day * 365;
+  var decade = year * 10;
+  var century = year * 100;
+  var millenium = year * 1000;
+
+  var delta = time1 - time2;
+
+  if (delta < second) return "Justo ahora.";
+  if (delta < minute) return `hace ${Math.round(delta / second)} segundos.`;
+  if (delta < hour) return `hace ${Math.round(delta / minute)} minutos.`;
+  if (delta < day) return `hace ${Math.round(delta / hour)} horas.`;
+  if (delta < week) return `hace ${Math.round(delta / day)} días.`;
+  if (delta < month) return `hace ${Math.round(delta / week)} semanas.`;
+  if (delta < year) return `hace ${Math.round(delta / month)} meses.`;
+  if (delta < decade) return `hace ${Math.round(delta / year)} años.`;
+  if (delta < century) return `hace ${Math.round(delta / decade)} décadas.`;
+  if (delta < millenium) return `hace ${Math.round(delta / century)} siglos.`;
 }

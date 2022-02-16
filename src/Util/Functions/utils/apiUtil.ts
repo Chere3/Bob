@@ -1,4 +1,4 @@
-import { Channel, Client, GuildMember, Message, TextChannel, ThreadChannel, User, VoiceChannel } from "discord.js";
+import { Channel, Client, GuildBan, GuildMember, Message, TextChannel, ThreadChannel, User, VoiceChannel } from "discord.js";
 import superagent from "superagent";
 import { findBestMatch } from "./generalUtil";
 
@@ -297,4 +297,125 @@ export async function getColor(color: string) {
   } else {
     throw TypeError(`El color no es válido.`);
   }
+}
+
+/**
+ * @function getMember - Obtiene un miembro del servidor.
+ * @param {string} ID El ID del usuario | Mención del usuario | Nombre del usuario | Apodo del usuario.
+ * @param {Message} message Mensaje que se está respondiendo.
+ * @returns {Member | null} El usuario encontrado.
+ * @example
+ * // Obtiene un miembro del servidor.
+ * const member = getMember(`<@!${user.id}>`, message);
+ */
+
+export async function getMember(person: any, message: Message) {
+
+  if (!person) throw TypeError(`El primer argumento es obligatorio.`);
+  if (!message) throw TypeError(`El segundo argumento es obligatorio.`);
+
+    var persona: GuildMember | null;
+    try {
+      if (
+        person.startsWith("<@!") ||
+        (person.startsWith("<@") && person.endsWith(">"))
+      ) {
+        const id = person.replace(/[<@!>]/g, "");
+        const user = await message.guild.members.fetch(`${id}`);
+  
+        persona = user;
+      } else if (person.match(/\d{16,22}$/gi)) {
+        const user = await message.guild.members.fetch(`${person}`);
+  
+        persona = user;
+      }
+  
+      // Discord Tag
+      else if (person.match(/^.{1,32}(#)+\d{4}$/gim)) {
+        let finale = await message.guild.members.cache.find(
+          (x) => x.user.tag === person
+        );
+        persona = finale;
+      }
+  
+      //Username or nickname get the better match
+      else if (person.match(/^.{1,32}$/gi)) {
+        
+        
+        
+        const a = await message.guild.members.cache.map(x => x.user.username).filter(x => x != null);
+        const b = await message.guild.members.cache.map(x => x.nickname).filter(x => x != null);
+
+        const one = findBestMatch(person, a).bestMatch.target;
+        const two = findBestMatch(person, b).bestMatch.target;
+
+        const reg1 = new RegExp(one, "i");
+        const reg2 = new RegExp(two, "i");
+
+        var aa = [];
+
+        aa.push(one, two);
+
+        const best = findBestMatch(person, aa).bestMatch.target;
+
+        var final = await message.guild.members.cache.find(x => reg1.test(x.user.username) ? x.user.username === best : x.user.username === best);
+        var final1 = await message.guild.members.cache.find(x => reg2.test(x.nickname) ? x.nickname === best : x.nickname === best);
+
+        const uno = final?.user?.username || "dhsahjkdhsajkdhsajkdhsajdhjskahdkjsahdkjshadkjhsakdhsakjhdkjsahdjksahdjksagdjhftyeftydfetyfetyetyftysdydsadhjsahdjksahdjskadhsakdhsadsajhdksahdjksahdjksahds"
+        const dos = final1?.nickname || "dsahdjksahdkjsahdjkhsajkdhsajkdhskajdhskjahdksjahdkjsahdkjsahdjshajkdhsjakhdjskahdasjkdhsadyuwydwtyuatydtsayudtuysatduysatduyastduysatyudtysuatdyusatdyusatdyuasd"
+
+        var bb = [];
+
+        bb.push(uno, dos);
+
+        const best1 = findBestMatch(person, bb).bestMatch.target;
+
+        if (best1 === uno) persona = final
+        else persona = final1;
+      
+      } else {
+        persona =  message.guild.members.cache.get(message.mentions.repliedUser?.id) || null
+      }
+    } catch (error) {
+      persona = message.guild.members.cache.get(message.mentions.repliedUser.id) || null
+    }
+  
+    return persona;
+}
+
+/**
+ * @function getBannedUser - Obtiene un usuario baneado del servidor.
+ * @param {string} Query El ID del usuario | Mención del usuario | Nombre del usuario | Apodo del usuario.
+ * @param {GuildBan[]} bans - Lista de bans del servidor.
+ */
+
+export async function getBannedUser(query: string, bans: GuildBan[]) {
+  if (!query) throw TypeError(`El primer argumento es obligatorio.`);
+  if (!bans) throw TypeError(`El segundo argumento es obligatorio.`);
+
+  var ban: GuildBan | null;
+
+  try {
+    if (query.startsWith(`<@!`) || (query.startsWith(`<@`) && query.endsWith(`>`))) {
+      const id = query.replace(/[<@!>]/g, "");
+      ban = bans.find((x) => x.user.id === id);
+    } else if (query.match(/\d{16,22}$/gi)) {
+      ban = bans.find((x) => x.user.id === query);
+    } else if (query.match(/^.{1,32}(#)+\d{4}$/gim)) {
+      ban = bans.find((x) => x.user.tag === query);
+    } else if (query.match(/^.{1,32}$/gi)) {
+      const a = await bans.map(x => x.user.username).filter(x => x != null);
+      const one = findBestMatch(query, a).bestMatch.target;
+      const reg1 = new RegExp(one, "i");
+      ban = bans.find((x) => reg1.test(x.user.username) ? x.user.username === one : x.user.username === one);
+    }
+  } catch (e) {
+    ban = null;
+  }
+
+  if (!ban) {
+    ban = null
+  }
+
+  return ban;
 }

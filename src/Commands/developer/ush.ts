@@ -4,7 +4,7 @@ import { TempContext } from "../../Util/Classes/Context";
 import {
   constructSlashCommand,
   uploadSlashCommands,
-} from "../../Util/Functions/managers/slashCommandsManager";
+} from "../../Util/managers/slashCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

@@ -16,11 +16,13 @@ export class TempContext {
   client: Client;
   config: typeof config;
   args: string[];
+  flags: string[];
   constructor(Temp: Client, message: Message) {
     this.message = message;
     this.client = Temp;
     this.config = config;
     this.args = [];
+    this.flags = [];
   }
 
   get channel() {
@@ -34,6 +36,10 @@ export class TempContext {
   }
   get member() {
     return this.message.member;
+  }
+
+  get _INTERNAL_E_TEXT() {
+    return `Mis sistemas han detectado un error interno en mi codigo, este ha sido notificado a mi desarrollador, por favor espera algun tiempo a que el error sea solucionado.`
   }
 
   l(content: string, link: string, disabled: boolean = false) {
@@ -50,15 +56,26 @@ export class TempContext {
     type: MessageButtonStyle,
     content: string,
     id: string = "a",
-    desactivated: boolean = false
+    desactivated: boolean = false,
+    emoji?: string
   ) {
+
+    if (!emoji) {
     const button = new MessageButton()
       .setStyle(type)
       .setLabel(content)
       .setCustomId(id)
       .setDisabled(desactivated);
 
-    return button;
+    return button;} else {
+      const button = new MessageButton()
+      .setStyle(type)
+      .setCustomId(id)
+      .setDisabled(desactivated)
+      .setEmoji(emoji);
+
+      return button;
+    }
   }
 
   ar(
@@ -164,4 +181,30 @@ export class TempContext {
       console.log(e);
     });
   }
+
+  Getmember(id: string) {
+    if (!this.guild.members.cache.get(id) == false) {
+      return this.guild.members.cache.get(id) as any
+    } else {
+      return this.client.users.cache.get(id) as any
+    }
+  }
+
+  async name(id: string) {
+    if (!this.guild.members.cache.get(id) == false) {
+      return this.guild.members.cache.get(id).nickname || this.guild.members.cache.get(id).user.username;
+    } else {
+      return await (await this.client.users.fetch(id)).username
+    }
+  }
+
+  async avatar(id: string) {
+    if (!this.guild.members.cache.get(id) == false) {
+      return this.guild.members.cache.get(id).displayAvatarURL() || this.guild.members.cache.get(id).user.displayAvatarURL();
+    } else {
+      return await (await this.client.users.fetch(id)).displayAvatarURL()
+    }
+  }
+  
 }
+

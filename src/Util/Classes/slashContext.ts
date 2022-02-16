@@ -25,6 +25,9 @@ export class SlashContext {
     return this.interaction.channel;
   }
 
+   
+  
+
   get guild() {
     return this.interaction.guild;
   }
