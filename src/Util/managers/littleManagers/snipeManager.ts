@@ -4,6 +4,7 @@ import { imageAPI } from '../../constants/imagesDB';
 import { getDBChannel } from "../channelManager";
 import { checkImage } from "./socialCommandsManager";
 import { channelModel, snipes, DBChannel } from '../../../Database/schemas/Channel';
+import { emojis } from '../../constants/emojis';
 
 /**
  * @function detectAndMoveImages - Detects and moves images from the message to the bot's image folder.
@@ -241,8 +242,11 @@ export async function moab(id: string) {
 
     for (const snipe of channel) {
       page = page + 1
+      var emoji;
+      snipe.messageContent == null && snipe.messageAttachments[0] == undefined ? emoji = emojis.rs_censura : snipe.messageAttachments[0] !== undefined ? emoji = emojis.rs_image : emoji = emojis.rs_mensaje
       const valor = {
         label: `${page} - ${snipe.messageAuthor}`,
+        emoji: emoji,
         description: `${snipe.messageContent?.slice(0, 30) || snipe.messageAttachments[0]?.slice(0, 30) || snipe.messageStickers[0]?.slice(0, 30) || "."}... `,
         value: `${page - 1}`
       }
@@ -255,9 +259,7 @@ export async function moab(id: string) {
     }
 
     const menu = new MessageSelectMenu().addOptions(array).setCustomId("si").setPlaceholder(`Selecciona un mensaje`)
-
     const action = new MessageActionRow().addComponents(menu)
-
     return action
 
   }

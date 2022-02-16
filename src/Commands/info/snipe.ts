@@ -57,7 +57,7 @@ async run(base: TempContext) {
                 mm.update({embeds: [universalEmbed.setDescription(`${snipes[value].messageContent || "ㅤ"}`).setImage(archivos[0] || null).setAuthor(snipes[value].messageAuthor, snipes[value].messageAuthorAvatar).setTimestamp(snipes[value].messageTimestamp).setFooter(`Snipe ${args + 1}`)]});
             } else if (archivos.length > 1) {
 
-                const m2 = await mm.update({embeds: [universalEmbed.setDescription(`${snipes[value].messageContent || "ㅤ"}`).setImage(archivos[0] || null).setAuthor(snipes[value].messageAuthor, snipes[value].messageAuthorAvatar).setTimestamp(snipes[value].messageTimestamp).setFooter(`Snipe ${value + 1}`)], components: [base.ar(base.b("SECONDARY", ">>", "right", false ,emojis.right_arrow), base.b("SECONDARY", "ㅤ", "aaa", true),base.b("SECONDARY", "ㅤ", "bbb", true), base.b("SECONDARY", "<<", "left", false, emojis.left_arrow))]})
+                const m2 = await mm.update({embeds: [universalEmbed.setDescription(`${snipes[value].messageContent || "ㅤ"}`).setImage(archivos[0] || null).setAuthor(snipes[value].messageAuthor, snipes[value].messageAuthorAvatar).setTimestamp(snipes[value].messageTimestamp).setFooter(`Snipe ${value + 1}`)], components: [base.ar(base.b("SECONDARY", ">>", "right", false ,emojis.right_arrow), base.b("SECONDARY", "ㅤ", "aaa", true),base.b("SECONDARY", "ㅤ", "bbb", true), base.b("SECONDARY", "<<", "left", false, emojis.left_arrow)), await constructMenu(base.message)]})
     
                 const collector = [];
                 for (let i = 0; i < archivos.length; i++) {
