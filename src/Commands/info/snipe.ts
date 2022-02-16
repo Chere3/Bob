@@ -42,7 +42,7 @@ async run(base: TempContext) {
             return aw1.on("collect", async (m) => {
                 const mm = m as SelectMenuInteraction;
 
-                if (!mm.values[0]) return;
+                if (m.isButton()) return;
 
                 if (mm.member.id !== base.message.member.id) return mm.reply({content: `Hey!, solo el autor del mensaje puede hacer esto.`, ephemeral: true})
 
