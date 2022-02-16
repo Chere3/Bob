@@ -1,10 +1,10 @@
 import { ButtonInteraction, Client, MessageEmbed } from "discord.js";
-import { sentry, transaction } from "../..";
-import { BaseCommand } from "../../Util/Classes/BaseCommand";
-import { TempContext } from "../../Util/Classes/Context";
-import { emojis } from "../../Util/constants/emojis";
-import { imagesDB } from "../../Util/constants/imagesDB";
-import { addImage, addImages } from "../../Util/managers/littleManagers/socialCommandsManager";
+import { sentry, transaction } from "../../..";
+import { BaseCommand } from "../../../Util/Classes/BaseCommand";
+import { TempContext } from "../../../Util/Classes/Context";
+import { emojis } from "../../../Util/constants/emojis";
+import { imagesDB } from "../../../Util/constants/imagesDB";
+import { addImage, addImages } from "../../../Util/managers/littleManagers/socialCommandsManager";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {

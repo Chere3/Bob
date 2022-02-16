@@ -1,8 +1,8 @@
 import { Client } from "discord.js";
 import { inspect } from "util";
-import { BaseCommand } from "../../Util/Classes/BaseCommand";
-import { TempContext } from "../../Util/Classes/Context";
-import { getUserDB } from "../../Util/Functions/utils/DBUtil";
+import { BaseCommand } from "../../../Util/Classes/BaseCommand";
+import { TempContext } from "../../../Util/Classes/Context";
+import { getUserDB } from "../../../Util/Functions/utils/DBUtil";
 
 export default class NameCommand extends BaseCommand {
   constructor(client: Client) {
