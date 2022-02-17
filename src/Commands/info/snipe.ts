@@ -20,7 +20,7 @@ aliases: ["snipes", "sniper"],
 
 
 async run(base: TempContext) {
-    
+
     var snipes = await (await getDBChannel(base.channel.id)).snipes;
     const universalEmbed = new MessageEmbed().setColor("PURPLE");
 
@@ -111,6 +111,9 @@ async run(base: TempContext) {
         
         else {
             var canal = await getChannel(base.args[0], base.message) || base.message.channel;
+            const nsfw = canal.nsfw == true ? true : canal.name.includes("🔞") ? true : false;
+            const nsfww = base.message.channel.nsfw == true ? true : base.message.channel.name.includes("🔞") ? true : false;
+            if (nsfw == true && nsfww == false) return base.message.channel.send({embeds: [universalEmbed.setDescription(`> __*** ⚠ Hey. No puedes snipear canales NSFW en canales marcados como SFW. ***__\n\n> **Y el canal ${canal} es NSFW.**`)]})
             snipes = await (await getDBChannel(canal.id)).snipes
         }
         
