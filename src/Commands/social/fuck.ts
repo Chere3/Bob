@@ -1,6 +1,7 @@
 import { Client, MessageEmbed } from "discord.js";
 import { BaseCommand } from "../../Util/Classes/BaseCommand";
 import { TempContext } from "../../Util/Classes/Context";
+import { emojis } from "../../Util/constants/emojis";
 import {
   getD,
   getFinalResult,
@@ -23,9 +24,7 @@ export default class NameCommand extends BaseCommand {
       var a = await getFinalResult(base.message, "fucks");
     } catch (e) {
       if (e == "TypeError: NAN_USER") {
-        return base.message.reply(
-          "Para usar este comando debes de mencionar a alguien.\n`Respondiendo al mensaje de la persona que quieres cogerte | Mencionandola | Poniendo su ID | Poniendo su usuario | Poniendo su tag | Poniendo su apodo`"
-        );
+        return base.message.reply(`> ${emojis.zdo_tonto} __**Para usar este comando debes de mencionar a alguien**__\n\`\`\`!fuck ${base.member.displayName}\n!fuck <@usuario>\`\`\``);
       } else if (e == "TypeError: EQUAL_AUTHOR") {
         return base.message.reply(`No te puedes coger a ti mismo.`);
       }
