@@ -25,6 +25,8 @@ async run(base: TempContext) {
     const universalEmbed = new MessageEmbed().setColor("PURPLE");
 
     var args = Number(base.args[0]) || Number(base.args[1]) || 1;
+    if (args > snipes.length) args = snipes.length;
+    if (args < 1) args = 1;
 
 
 
@@ -83,7 +85,7 @@ async run(base: TempContext) {
 
                 const cc =  c as ButtonInteraction;
 
-                if (cc.member.id !== base.message.author.id) return cc.reply({content: `HEY! Solo el autor del mensaje puede hacer esto.`, ephemeral:true})
+                if (cc.member.id !== base.message.author.id) return cc.reply({content: `PENDING PRIVATE INSTANCE, ADD.`, ephemeral:true})
                 if (cc.customId == "right") {
                     if (page !== 0) {
                         --page;
