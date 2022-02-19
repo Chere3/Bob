@@ -8,6 +8,8 @@ import {
   MessageSelectMenu,
   MessageActionRow,
 } from "discord.js";
+import { moderationutil } from "../constants/evalUtil";
+import { moderationUtil } from "../managers/moderationManager";
 
 type options = "boterror" | "error" | "info" | "good" | undefined;
 
@@ -36,6 +38,11 @@ export class TempContext {
   }
   get member() {
     return this.message.member;
+  }
+  
+  get db() {
+    const a = new moderationUtil().childRandom();
+    return this.b("SECONDARY", "ㅤ", a, true)
   }
 
   get _INTERNAL_E_TEXT() {

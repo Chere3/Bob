@@ -5,6 +5,7 @@ import { getDBChannel } from "../channelManager";
 import { checkImage } from "./socialCommandsManager";
 import { channelModel, snipes, DBChannel } from '../../../Database/schemas/Channel';
 import { emojis } from '../../constants/emojis';
+import { sentry, transaction } from '../../..';
 
 /**
  * @function detectAndMoveImages - Detects and moves images from the message to the bot's image folder.
@@ -35,6 +36,7 @@ export async function detectAndMoveImages(message: Message) {
         array.push(image.url)
         } catch (error) {
             array.push(attachment.proxyURL)
+            console.log(error)
         } 
     }
 
@@ -97,13 +99,37 @@ export function detectEmbeds(message: Message) {
  */
 
 export async function uploadImageToA(imageURL: string) {
+  transaction
   try {
       const a = await superagent.get(
         `https://api.imgbb.com/1/upload?key=${process.env.API_IMGS}&image=${imageURL}`
       )
     return a.body.data as imageAPI
   } catch (error) {
-    throw error;
+    try {
+      const a = await superagent.get(
+        `https://api.imgbb.com/1/upload?key=${process.env.API_IMGS2}&image=${imageURL}`
+      )
+    return a.body.data as imageAPI
+    } catch (error) {
+      try {
+        const a = await superagent.get(
+          `https://api.imgbb.com/1/upload?key=${process.env.API_IMGS3}&image=${imageURL}`
+        )
+      return a.body.data as imageAPI
+      } catch (error) {
+        try {
+          const a = await superagent.get(
+            `https://api.imgbb.com/1/upload?key=${process.env.API_IMGS4}&image=${imageURL}`
+          )
+        return a.body.data as imageAPI
+        } catch (error) {
+          sentry.captureException(error);
+        } finally {
+          transaction.finish();
+        }
+      }
+    }
   }
 }
 

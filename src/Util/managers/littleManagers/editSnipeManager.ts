@@ -103,8 +103,8 @@ export async function addSnipe(message: Message, editedMessage: Message) {
 
   await array.unshift({
     messageID: message.id,
-    messageAuthor: message.member.nickname || message.member.user.username,
-    messageAuthorAvatar: message.author.avatarURL(),
+    messageAuthor: message.member.nickname ?? message.author.username,
+    messageAuthorAvatar: message.member.avatarURL() ?? message.author.avatarURL(),
     messageContent: message.content,
     messageLink: `https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`,
     messageAttachments: attachments,
