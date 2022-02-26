@@ -61,6 +61,7 @@ function detectAndMoveEmbeds(message, editedMessage) {
 }
 exports.detectAndMoveEmbeds = detectAndMoveEmbeds;
 function addSnipe(message, editedMessage) {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const channel = yield (0, channelManager_1.getDBChannel)(message.channel.id);
         const attachments = yield getAttachments(message, editedMessage);
@@ -71,8 +72,8 @@ function addSnipe(message, editedMessage) {
         }
         yield array.unshift({
             messageID: message.id,
-            messageAuthor: message.member.nickname || message.member.user.username,
-            messageAuthorAvatar: message.author.avatarURL(),
+            messageAuthor: (_a = message.member.nickname) !== null && _a !== void 0 ? _a : message.author.username,
+            messageAuthorAvatar: (_b = message.member.avatarURL()) !== null && _b !== void 0 ? _b : message.author.avatarURL(),
             messageContent: message.content,
             messageLink: `https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`,
             messageAttachments: attachments,

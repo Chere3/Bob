@@ -31,9 +31,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handlers = void 0;
 const fs = __importStar(require("fs/promises"));
 const path = __importStar(require("path"));
+const index_1 = require("../../index");
 function handlers(TempoClient) {
     (function handleCommands(dir = "../../Commands") {
         return __awaiter(this, void 0, void 0, function* () {
+            index_1.transaction;
             let files = yield fs.readdir(path.join(__dirname, dir));
             for (let file of files) {
                 let stat = yield fs.lstat(path.join(__dirname, dir, file));
@@ -49,6 +51,10 @@ function handlers(TempoClient) {
                         }
                         catch (err) {
                             console.error(err);
+                            index_1.sentry.captureException(err);
+                        }
+                        finally {
+                            index_1.transaction.finish();
                         }
                     }
                 }
@@ -57,6 +63,7 @@ function handlers(TempoClient) {
     })();
     (function handleSlashCommands(dir = "../../slash-commands") {
         return __awaiter(this, void 0, void 0, function* () {
+            index_1.transaction;
             let files = yield fs.readdir(path.join(__dirname, dir));
             for (let file of files) {
                 let stat = yield fs.lstat(path.join(__dirname, dir, file));
@@ -72,6 +79,10 @@ function handlers(TempoClient) {
                         }
                         catch (err) {
                             console.error(err);
+                            index_1.sentry.captureException(err);
+                        }
+                        finally {
+                            index_1.transaction.finish();
                         }
                     }
                 }
@@ -80,6 +91,7 @@ function handlers(TempoClient) {
     })();
     (function handleEvents(dir = "../../Events") {
         return __awaiter(this, void 0, void 0, function* () {
+            index_1.transaction;
             let files = yield fs.readdir(path.join(__dirname, dir));
             for (let file of files) {
                 let stat = yield fs.lstat(path.join(__dirname, dir, file));
@@ -97,6 +109,10 @@ function handlers(TempoClient) {
                     catch (err) {
                         console.log(`Hey, ocurrio un error tranado de iniciar el evento: ${eventName}`);
                         console.log(err);
+                        index_1.sentry.captureException(err);
+                    }
+                    finally {
+                        index_1.transaction.finish();
                     }
                 }
             }

@@ -18,6 +18,8 @@ const superagent_1 = __importDefault(require("superagent"));
 const channelManager_1 = require("../channelManager");
 const socialCommandsManager_1 = require("./socialCommandsManager");
 const Channel_1 = require("../../../Database/schemas/Channel");
+const emojis_1 = require("../../constants/emojis");
+const __1 = require("../../..");
 function detectAndMoveImages(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (message.attachments.size == 0 && message.embeds.length == 0)
@@ -36,6 +38,7 @@ function detectAndMoveImages(message) {
             }
             catch (error) {
                 array.push(attachment.proxyURL);
+                console.log(error);
             }
         }
         return array;
@@ -72,12 +75,34 @@ function detectEmbeds(message) {
 exports.detectEmbeds = detectEmbeds;
 function uploadImageToA(imageURL) {
     return __awaiter(this, void 0, void 0, function* () {
+        __1.transaction;
         try {
             const a = yield superagent_1.default.get(`https://api.imgbb.com/1/upload?key=${process.env.API_IMGS}&image=${imageURL}`);
             return a.body.data;
         }
         catch (error) {
-            throw error;
+            try {
+                const a = yield superagent_1.default.get(`https://api.imgbb.com/1/upload?key=${process.env.API_IMGS2}&image=${imageURL}`);
+                return a.body.data;
+            }
+            catch (error) {
+                try {
+                    const a = yield superagent_1.default.get(`https://api.imgbb.com/1/upload?key=${process.env.API_IMGS3}&image=${imageURL}`);
+                    return a.body.data;
+                }
+                catch (error) {
+                    try {
+                        const a = yield superagent_1.default.get(`https://api.imgbb.com/1/upload?key=${process.env.API_IMGS4}&image=${imageURL}`);
+                        return a.body.data;
+                    }
+                    catch (error) {
+                        __1.sentry.captureException(error);
+                    }
+                    finally {
+                        __1.transaction.finish();
+                    }
+                }
+            }
         }
     });
 }
@@ -158,8 +183,11 @@ function constructMenu(message) {
         var page = 0;
         for (const snipe of channel) {
             page = page + 1;
+            var emoji;
+            snipe.messageContent == null && snipe.messageAttachments[0] == undefined ? emoji = emojis_1.emojis.rs_censura : snipe.messageAttachments[0] !== undefined ? emoji = emojis_1.emojis.rs_image : emoji = emojis_1.emojis.rs_mensaje;
             const valor = {
                 label: `${page} - ${snipe.messageAuthor}`,
+                emoji: emoji,
                 description: `${((_a = snipe.messageContent) === null || _a === void 0 ? void 0 : _a.slice(0, 30)) || ((_b = snipe.messageAttachments[0]) === null || _b === void 0 ? void 0 : _b.slice(0, 30)) || ((_c = snipe.messageStickers[0]) === null || _c === void 0 ? void 0 : _c.slice(0, 30)) || "."}... `,
                 value: `${page - 1}`
             };

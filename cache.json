@@ -1,6 +1,1 @@
-{
-    "test": true,
-    "muted": [],
-    "warns": [],
-    "bans": []
-}
+{"test":true,"muted":[],"warns":[{"id":"915082236120936530","case":"8CJ&-GRI6-3WR%-NAU%","expiration":1645928173036}],"bans":[],"instances":{"snipe":[],"modlogs":[],"warns":[]}}

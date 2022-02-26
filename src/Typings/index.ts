@@ -2,8 +2,9 @@ import { Collection } from "discord.js";
 import { BaseCommand } from "../Util/Classes/BaseCommand";
 import Captain from "captainjs";
 import { BaseSlashCommand } from "../Util/Classes/BaseSlashCommand";
-import { cache } from '../Util/constants/cache';
+import { cacheStructure } from '../Util/constants/cache';
 import { allUtil } from "../Util/constants/evalUtil";
+import { JsonDB } from "node-json-db";
 
 declare module "discord.js" {
   interface Client {
@@ -13,7 +14,7 @@ declare module "discord.js" {
     cooldoown: Collection<string, number>;
     invitations: Collection<string, Invite>;
     all: any;
-    cache: cache;
+    cache: cacheStructure;
   }
 
   interface Channel {

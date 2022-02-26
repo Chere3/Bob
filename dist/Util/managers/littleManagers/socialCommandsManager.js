@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFinalResult = exports.getIntNumber1 = exports.getD = exports.getRandomDescription = exports.getRandomCategorieImage = exports.sortImages = exports.getDBDescriptions = exports.getDBImages = exports.addImages = exports.addDescription = exports.addImage = exports.checkDescription = exports.checkImage = void 0;
+exports.getFinalResult = exports.deleteImage = exports.getIntNumber1 = exports.getD = exports.getRandomDescription = exports.getRandomCategorieImage = exports.sortImages = exports.getDBDescriptions = exports.getDBImages = exports.addImages = exports.addDescription = exports.addImage = exports.checkDescription = exports.checkImage = void 0;
 const descriptions_1 = require("../../../Database/schemas/descriptions");
 const Images_1 = require("../../../Database/schemas/Images");
 const imagesDB_1 = require("../../constants/imagesDB");
@@ -250,9 +250,9 @@ function addImages(imagesURL, imageType) {
     return __awaiter(this, void 0, void 0, function* () {
         if (imagesDB_1.imagesDB.find((x) => x == imageType) == undefined)
             throw new Error("El tipo de imagen no es válido.");
-        yield imagesURL.map((x) => __awaiter(this, void 0, void 0, function* () {
-            yield checkImage(x);
-        }));
+        for (const image of imagesURL) {
+            yield checkImage(image);
+        }
         const imagenes = (yield Images_1.imagesModel.findOne({ id: "first" }));
         if (imageType == "hug") {
             const hugs = imagenes.hug;
@@ -270,7 +270,7 @@ function addImages(imagesURL, imageType) {
             const pat = imagenes.pats;
             yield imagesURL.map((x) => pat.push(x));
             return yield Images_1.imagesModel
-                .findOneAndUpdate({ id: "first" }, { pat: pat })
+                .findOneAndUpdate({ id: "first" }, { pats: pat })
                 .catch((a) => console.log(a));
         }
         else if (imageType == "happy") {
@@ -856,6 +856,30 @@ function getIntNumber1(id, type) {
     });
 }
 exports.getIntNumber1 = getIntNumber1;
+function deleteImage(URL) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield getDBImages();
+        const keys = Object.keys(Object.values(data)[5]);
+        var a;
+        var b;
+        for (let key of keys) {
+            if (data[key].constructor.name == "CoreMongooseArray" && data[key].find(x => x == URL)) {
+                a = (data[key].filter(x => x !== URL));
+                b = key;
+            }
+        }
+        if (!a && !b)
+            throw Error(`El link que has puesto no se ha encontrado en ninguna parte de la base de datos.`);
+        Images_1.imagesModel.findOneAndUpdate({ id: "first" }, { b: a });
+        return {
+            name: URL,
+            category: b,
+            filteredData: a,
+            sizeOfArray: a.length
+        };
+    });
+}
+exports.deleteImage = deleteImage;
 function getFinalResult(message, type) {
     return __awaiter(this, void 0, void 0, function* () {
         const description = yield getD(message, type);

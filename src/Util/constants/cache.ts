@@ -1,10 +1,12 @@
+import { instances } from "./instances";
 import { ban, muted } from "./moderationDataManager";
 
-export interface cache {
+export interface cacheStructure {
     test: boolean // if the bot is in test mode or not.
     muted: muted[]; // the muted users.
     warns: cachedWarn[];
-    bans: ban[];   
+    bans: ban[];
+    instances: instances;
 }
 
 export interface cachedWarn {
@@ -13,4 +15,4 @@ export interface cachedWarn {
     expiration: number;
 }
 
-export type cachetype = "test" | "warns" | "muted"; 
+export type cachetype = "test" | "warns" | "muted" | "instances"; 

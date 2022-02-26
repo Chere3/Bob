@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMember = exports.getColor = exports.SearchUser = exports.getChannel = exports.getPerson = exports.validate = exports.getApiUser = void 0;
+exports.getBannedUser = exports.getMember = exports.getColor = exports.SearchUser = exports.getChannel = exports.getPerson = exports.validate = exports.getApiUser = void 0;
 const superagent_1 = __importDefault(require("superagent"));
 const generalUtil_1 = require("./generalUtil");
 function getApiUser(query) {
@@ -207,7 +207,7 @@ function getColor(color) {
 }
 exports.getColor = getColor;
 function getMember(person, message) {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         if (!person)
             throw TypeError(`El primer argumento es obligatorio.`);
@@ -252,7 +252,7 @@ function getMember(person, message) {
                     persona = final1;
             }
             else {
-                persona = message.guild.members.cache.get(message.mentions.repliedUser.id) || null;
+                persona = message.guild.members.cache.get((_b = message.mentions.repliedUser) === null || _b === void 0 ? void 0 : _b.id) || null;
             }
         }
         catch (error) {
@@ -262,3 +262,38 @@ function getMember(person, message) {
     });
 }
 exports.getMember = getMember;
+function getBannedUser(query, bans) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!query)
+            throw TypeError(`El primer argumento es obligatorio.`);
+        if (!bans)
+            throw TypeError(`El segundo argumento es obligatorio.`);
+        var ban;
+        try {
+            if (query.startsWith(`<@!`) || (query.startsWith(`<@`) && query.endsWith(`>`))) {
+                const id = query.replace(/[<@!>]/g, "");
+                ban = bans.find((x) => x.user.id === id);
+            }
+            else if (query.match(/\d{16,22}$/gi)) {
+                ban = bans.find((x) => x.user.id === query);
+            }
+            else if (query.match(/^.{1,32}(#)+\d{4}$/gim)) {
+                ban = bans.find((x) => x.user.tag === query);
+            }
+            else if (query.match(/^.{1,32}$/gi)) {
+                const a = yield bans.map(x => x.user.username).filter(x => x != null);
+                const one = (0, generalUtil_1.findBestMatch)(query, a).bestMatch.target;
+                const reg1 = new RegExp(one, "i");
+                ban = bans.find((x) => reg1.test(x.user.username) ? x.user.username === one : x.user.username === one);
+            }
+        }
+        catch (e) {
+            ban = null;
+        }
+        if (!ban) {
+            ban = null;
+        }
+        return ban;
+    });
+}
+exports.getBannedUser = getBannedUser;

@@ -11,20 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const BaseCommand_1 = require("../../Util/Classes/BaseCommand");
-const Images_1 = require("../../Database/schemas/Images");
-const socialCommandsManager_1 = require("../../Util/managers/littleManagers/socialCommandsManager");
-const socialCommandsManager_2 = require("../../Util/managers/littleManagers/socialCommandsManager");
 const textUtil_1 = require("../../Util/Functions/utils/textUtil");
-const snipeManager_1 = require("../../Util/managers/littleManagers/snipeManager");
-const apiUtil_1 = require("../../Util/Functions/utils/apiUtil");
-const channelManager_1 = require("../../Util/managers/channelManager");
-const listBanManager_1 = require("../../Util/managers/littleManagers/listBanManager");
-const index_1 = require("../../index");
-const cacheManager_1 = require("../../Util/managers/littleManagers/cacheManager");
-const moderationManager_1 = require("../../Util/managers/moderationManager");
-const generalUtil_1 = require("../../Util/Functions/utils/generalUtil");
-const loggerManager_1 = require("../../Util/managers/loggerManager");
-const User_1 = require("../../Database/schemas/User");
+const evalUtil_1 = require("../../Util/constants/evalUtil");
+const emojis_1 = require("../../Util/constants/emojis");
 class NameCommand extends BaseCommand_1.BaseCommand {
     constructor(client) {
         super(client, {
@@ -36,41 +25,19 @@ class NameCommand extends BaseCommand_1.BaseCommand {
     }
     run(base) {
         return __awaiter(this, void 0, void 0, function* () {
-            const checkearImagen = socialCommandsManager_2.checkImage;
-            const imgadd = socialCommandsManager_2.addImage;
-            const imagenes = socialCommandsManager_2.getDBImages;
-            const imgs = Images_1.imagesModel;
-            const sortear = socialCommandsManager_2.sortImages;
-            const getImage = socialCommandsManager_2.getRandomCategorieImage;
-            const getD = socialCommandsManager_2.getDBDescriptions;
-            const intnumber = socialCommandsManager_1.getIntNumber1;
-            const checkD = socialCommandsManager_1.checkDescription;
-            const separe = textUtil_1.separeTexto;
-            const result = socialCommandsManager_1.getFinalResult;
-            const uplImg = snipeManager_1.uploadImageToA;
-            const upl = snipeManager_1.detectAndMoveImages;
-            const upt = snipeManager_1.detectAndMoveStickers;
-            const upy = snipeManager_1.detectEmbeds;
-            const separate = generalUtil_1.separateArray;
-            const addsnipe = snipeManager_1.addSnipe;
-            const getCh = apiUtil_1.getChannel;
-            const dbchannel = channelManager_1.getDBChannel;
-            const formatT = moderationManager_1.formatTime;
-            const constructmenu = snipeManager_1.constructMenu;
-            const usermodel = User_1.userModel;
-            const list = listBanManager_1.formatBans;
-            const test = cacheManager_1.getTestMode;
-            const cache = index_1.db;
-            const casee = moderationManager_1.createCaseNumber;
-            const mm = moderationManager_1.muteManager;
-            const wm = moderationManager_1.warnManager;
-            const hm = moderationManager_1.historialManager;
-            const blm = loggerManager_1.moderationBotLogs;
+            const su = evalUtil_1.snipeUtil;
+            const scu = evalUtil_1.socialCommandUtil;
+            const dbu = evalUtil_1.dbUtil;
+            const tu = evalUtil_1.textUtil;
+            const mu = evalUtil_1.moderationutil;
+            const cu = evalUtil_1.cacheUtil;
+            const all = evalUtil_1.allUtil;
+            const apu = evalUtil_1.APIUtil;
             const { query, flags } = (0, textUtil_1.parseQuery)(base.args);
             if (!query.length)
                 return;
             let input = query.join(" ");
-            const embed = new discord_js_1.MessageEmbed().setAuthor(`🧠 Calculado.`);
+            const embed = new discord_js_1.MessageEmbed().setAuthor({ name: `🧠 Calculado.` }).setDescription(`a`);
             try {
                 if (flags.includes("async")) {
                     input = `(async () => { ${input} })()`;
@@ -91,31 +58,88 @@ class NameCommand extends BaseCommand_1.BaseCommand {
                     .replace(/`/g, "`" + String.fromCharCode(8203))
                     .replace(/@/g, "@" + String.fromCharCode(8203));
                 if (output.length > 4096) {
-                    (0, textUtil_1.separeTexto)(output, 4000).map((x) => {
-                        base.channel.send({
-                            embeds: [embed.setDescription(`\`\`\`javascript\n${x}\`\`\``)],
-                        });
+                    const separado = (0, textUtil_1.separeTexto)(output, 4000);
+                    const embeds = [];
+                    var i = 0;
+                    for (let textito of separado) {
+                        embeds.push(new discord_js_1.MessageEmbed().setColor(`DARK_PURPLE`).setAuthor({ name: `🧠 Calculado.` }).setDescription(`\`\`\`js\n${textito}\`\`\``).setFooter(`Ping: ${base.client.ws.ping} | Tipo: ${type} | Página ${i + 1} de ${separado.length}`));
+                        i = i + 1;
+                    }
+                    var pagee = 0;
+                    const m1 = yield base.message.channel.send({ embeds: [new discord_js_1.MessageEmbed().setColor(`DARK_PURPLE`).setAuthor({ name: `🧠 Calculado.` }).setDescription(`\`\`\`js\n${separado[0]}\`\`\``).setFooter(`Ping: ${base.client.ws.ping} | Tipo: ${type} | Página 1 de ${separado.length}`)], components: [base.ar(base.b("SECONDARY", "right", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "left", "left", false, emojis_1.emojis.left_arrow))] });
+                    const aw1 = yield m1.createMessageComponentCollector({ componentType: "BUTTON", time: 60000 });
+                    return aw1.on("collect", (a) => {
+                        if (a.customId == "left") {
+                            if (page !== 0) {
+                                --page;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "right", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "left", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                            else {
+                                page = [embeds.length - 1];
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "right", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "left", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                        }
+                        else if (a.customId == "right") {
+                            if (page < embeds.length - 1) {
+                                page++;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "right", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "left", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                            else {
+                                page = 0;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "right", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "left", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                        }
                     });
                 }
                 else {
                     embed.setDescription("```js\n" + output + "```");
                 }
-                embed.setFooter(`Tipo: ${type} | Ping: ${base.client.ws.ping}ms`);
+                embed.setFooter({ text: `Tipo: ${type} | Ping: ${base.client.ws.ping}ms` });
                 embed.setColor(0x002c2f33);
                 return base.channel.send({ embeds: [embed] });
             }
             catch (error) {
+                console.log(error);
                 if (error.length > 6000) {
-                    (0, textUtil_1.separeTexto)(error, 5000).map((x) => {
-                        base.channel.send({
-                            embeds: [embed.setDescription(`\`\`\`javascript\n${x}\`\`\``)],
-                        });
+                    const text = (0, textUtil_1.separeTexto)(error, 5000);
+                    const embeds = [];
+                    for (let caca of text) {
+                        let i = 0;
+                        if (i < text.length) {
+                            i++;
+                        }
+                        embeds.push(new discord_js_1.MessageEmbed().setDescription(`\`\`\`js\n${caca}\`\`\``).setFooter({ text: `Tipo: ${(0, textUtil_1.parseType)(error)} | Ping: ${base.client.ws.ping}ms | Página: ${i + 1} de ${text.length}` }).setColor(0x002c2f33));
+                    }
+                    var page = 0;
+                    const m1 = yield base.channel.send({ embeds: [new discord_js_1.MessageEmbed().setDescription(`\`\`\`js\n${text[0]}\`\`\``).setFooter({ text: `Tipo: ${(0, textUtil_1.parseType)(error)} | Ping: ${base.client.ws.ping}ms | Página: 1 de ${text.length}` }).setColor(0x002c2f33)], components: [base.ar(base.b("SECONDARY", ".", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", "⠀", "..", true), base.b("SECONDARY", ".", "left", false, emojis_1.emojis.left_arrow))] });
+                    const aw1 = yield m1.createMessageComponentCollector({ componentType: "BUTTON", time: 60000, filter: (x) => x.member.id == base.message.member.id });
+                    aw1.on("collect", (a) => {
+                        if (a.customId == "right") {
+                            if (page !== 0) {
+                                --page;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "..", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", ".", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                            else {
+                                page = [embeds.length - 1];
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "..", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", ".", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                        }
+                        else if (a.customId == "left") {
+                            if (page < embeds.length - 1) {
+                                page++;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "..", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", ".", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                            else {
+                                page = 0;
+                                a.update({ embeds: [embeds[page]], components: [base.ar(base.b("SECONDARY", "..", "right", false, emojis_1.emojis.right_arrow), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", "⠀", ".", true), base.b("SECONDARY", ".", "left", false, emojis_1.emojis.left_arrow))] });
+                            }
+                        }
                     });
                 }
                 else {
                     embed.setDescription("```js\n" + error + "```");
                 }
-                embed.setFooter(`Tipo: ${(0, textUtil_1.parseType)(error)} | Ping: ${base.client.ws.ping}ms`);
+                embed.setFooter({ text: `Tipo: ${(0, textUtil_1.parseType)(error)} | Ping: ${base.client.ws.ping}ms` });
                 return base.channel.send({ embeds: [embed] });
             }
         });

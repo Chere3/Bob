@@ -4,7 +4,9 @@ exports.historialModel = exports.historialSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.historialSchema = new mongoose_1.Schema({
     id: { type: String, required: true },
+    all: { type: Array, required: true, default: [] },
     warns: { type: Array, required: true, default: [] },
+    warnsDelete: { type: Array, required: true, default: [] },
     kicks: { type: Array, required: true, default: [] },
     bans: { type: Array, required: true, default: [] },
     mutes: { type: Array, required: true, default: [] },

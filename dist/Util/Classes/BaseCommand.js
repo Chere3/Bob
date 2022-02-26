@@ -20,6 +20,7 @@ class BaseCommand {
         this.dev = options.dev || false;
         this.staff = options.staff || false;
         this.mediumStaff = options.mediumStaff || false;
+        this.highStaff = options.highStaff || false;
         this.guildOnly = options.guildOnly || true;
         this.nsfw = options.nsfw || false;
         this.aliases = options.aliases || [];
@@ -44,6 +45,12 @@ class BaseCommand {
                 return msg.reply(`> ${emojis_1.emojis.zdo_sospechoso} __**Este comando solo funciona para miembros con permisos de administración**__`);
             if (this.mediumStaff && !msg.member.permissions.has("MANAGE_GUILD"))
                 return msg.reply(`> ${emojis_1.emojis.zdo_sospechoso} __**Este comando solo funciona para miembros con permisos de administración medio elevados.**__`);
+            if (this.highStaff && !msg.member.roles.cache.has(`913123943941025822`)) {
+                if (msg.member.roles.cache.has(`913123943072813096`) || msg.member.roles.cache.has(`852588734104469535`)) { }
+                else {
+                    return msg.reply(`> ${emojis_1.emojis.zdo_sospechoso} __**Este comando solo funciona para miembros ejecutivos superiores (creadores o owners)**__`);
+                }
+            }
             if (this.nsfw == true && !msg.channel.nsfw && !config_1.config.owners.includes(msg.author.id))
                 return msg.reply(`> ${emojis_1.emojis.oso_policia} __**Alto ahí horny... Este comando solo funciona en canales marcados como *NSFW***__`);
             if (this.botPermissions.length > 0) {

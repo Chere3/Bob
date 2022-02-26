@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const BaseCommand_1 = require("../../Util/Classes/BaseCommand");
+const emojis_1 = require("../../Util/constants/emojis");
 const socialCommandsManager_1 = require("../../Util/managers/littleManagers/socialCommandsManager");
 class NameCommand extends BaseCommand_1.BaseCommand {
     constructor(client) {
@@ -28,7 +29,7 @@ class NameCommand extends BaseCommand_1.BaseCommand {
             }
             catch (e) {
                 if (e == "TypeError: NAN_USER") {
-                    return base.message.reply("Para usar este comando debes de mencionar a alguien.\n`Respondiendo al mensaje de la persona que quieres abrazar | Mencionandola | Poniendo su ID | Poniendo su usuario | Poniendo su tag | Poniendo su apodo`");
+                    return base.message.reply(`> ${emojis_1.emojis.zdo_tonto} __**Para usar este comando debes de mencionar a alguien**__\n\`\`\`!hug ${base.member.displayName}\n!hug <@usuario>\`\`\``);
                 }
                 else if (e == "TypeError: EQUAL_AUTHOR") {
                     return base.message.reply(`No te puedes abrazar a ti mismo.`);

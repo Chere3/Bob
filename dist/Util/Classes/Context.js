@@ -12,12 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TempContext = void 0;
 const config_1 = require("../../config");
 const discord_js_1 = require("discord.js");
+const moderationManager_1 = require("../managers/moderationManager");
 class TempContext {
     constructor(Temp, message) {
         this.message = message;
         this.client = Temp;
         this.config = config_1.config;
         this.args = [];
+        this.flags = [];
     }
     get channel() {
         return this.message.channel;
@@ -30,6 +32,13 @@ class TempContext {
     }
     get member() {
         return this.message.member;
+    }
+    get db() {
+        const a = new moderationManager_1.moderationUtil().childRandom();
+        return this.b("SECONDARY", "ㅤ", a, true);
+    }
+    get _INTERNAL_E_TEXT() {
+        return `Mis sistemas han detectado un error interno en mi codigo, este ha sido notificado a mi desarrollador, por favor espera algun tiempo a que el error sea solucionado.`;
     }
     l(content, link, disabled = false) {
         const button = new discord_js_1.MessageButton()
@@ -123,6 +132,16 @@ class TempContext {
         else {
             return this.client.users.cache.get(id);
         }
+    }
+    name(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.guild.members.cache.get(id) == false) {
+                return this.guild.members.cache.get(id).nickname || this.guild.members.cache.get(id).user.username;
+            }
+            else {
+                return yield (yield this.client.users.fetch(id)).username;
+            }
+        });
     }
     avatar(id) {
         return __awaiter(this, void 0, void 0, function* () {

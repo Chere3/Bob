@@ -14,5 +14,12 @@ exports.emojis = {
     zd_regalo: `<a:zd_regalo:926045591262335026>`,
     oso_policia: "<a:rs_policia_oso:926241141941235752>",
     rana_fire: `<a:rs_fire:926255460850495568>`,
-    zdo_tonto: `<:zd_tonto:925583704963825685>`
+    zdo_tonto: `<:zd_tonto:925583704963825685>`,
+    rs_palomita: `<:rs_palomita:929486617230581782>`,
+    rs_x: `<:rs_cruz:929486289097601165>`,
+    internal_error: "<a:error:938290447590236251>",
+    separador: "<a:rs_separador:940465333939109898>",
+    rs_image: "<:rs_image:943547981599227904>",
+    rs_censura: "<:rs_censura:943549156650262588>",
+    rs_mensaje: "<:rs_mensaje:943548776520486912>"
 };

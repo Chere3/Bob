@@ -40,8 +40,63 @@ async run(base: TempContext) {
     aw1.on("collect", async (a) => {
         const mm = a as SelectMenuInteraction;
         if (a.isButton() == true) return;
-        if (mm.member.id !== base.message.member.id) return mm.reply({content: `PRIVATE INSTANCE MISSING TYPE 2`, ephemeral: true});;
+        
         const value = Number(mm.values[0]); const archivos = combineAll(snipes[value].messageAttachments, snipes[value].messageStickers);
+
+
+        ///////////// PRIVATE INSTANCE //////////////////
+
+
+        if (mm.member.id !== base.message.member.id) {
+
+            
+            var m2 = await mm.reply({components: [menu.setComponents(menu.components[0].setCustomId(a.channel.id))], embeds: [universalEmbed.setAuthor({name: snipes[0].messageAuthor, iconURL: snipes[0].messageAuthorAvatar}).setDescription(snipes[0].messageContent).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[0].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setImage(snipes[0].messageAttachments[0] ?? null).setTimestamp(snipes[0].messageTimestamp)], ephemeral: true, fetchReply: true});
+
+            if (!archivos.length) {
+                mm.update({embeds: [universalEmbed.setDescription(snipes[value].messageContent ?? "ㅤ").setImage(null).setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp)]});
+            } else if (archivos.length == 1) {
+                if (archivos[0].includes(".mp4")) {
+                    mm.update({embeds: [universalEmbed.setDescription(`${snipes[value].messageContent ?? "ㅤ"}\n\n__**[Vídeo borrado](${archivos[0]})**__`).setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp)]});
+                } else {
+                    mm.update({embeds: [universalEmbed.setDescription(snipes[value].messageContent ?? "ㅤ").setImage(archivos[0] ?? null).setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp)]});
+                }
+            } else if (archivos.length > 1) {
+                const m2 = await mm.update({embeds: [universalEmbed.setDescription(snipes[value].messageContent ?? "ㅤ").setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp)], components: [base.ar(base.b("SECONDARY", ".", "right", false, emojis.right_arrow), base.db, base.db, base.b("SECONDARY", ".", "left", false, emojis.left_arrow)), menu]});
+                const collector = [];
+                for (let i = 0; i < archivos.length; i++) {
+                    collector.push(new MessageEmbed().setColor(`PURPLE`).setDescription(snipes[value].messageContent ?? "ㅤ").setImage(archivos[i] ?? null).setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp));
+                }
+                
+                var page: any = 0;
+    
+                const aw1 = await m1.createMessageComponentCollector({time: 60000, componentType: "BUTTON", max: 20});
+                await aw1.on("collect", async (a) => {
+                    const cc = a as ButtonInteraction;
+    
+                    if (cc.member.id !== base.message.author.id) return cc.reply({content: `PRIVATE INSTANCE MISSING TYPE 2`, ephemeral: true});
+                    if (cc.customId == "right") {
+                        if (page !== 0) {
+                            --page;
+                            cc.update({embeds: [collector[page]]});
+                        } else {
+                            page = [collector.length - 1];
+                            cc.update({embeds: [collector[page]]});
+                        }
+                    } else if (cc.customId == "left") {
+                        if (page < collector.length - 1) {
+                            page++;
+                            cc.update({embeds: [collector[page]]});
+                        } else {
+                            page = 0;
+                            cc.update({embeds: [collector[page]]});
+                        }
+                    }
+                })
+            }
+        /////////////////////// PRIVATE INSTANCE ////////////////////////////
+
+        }
+
         if (!archivos.length) {
             mm.update({embeds: [universalEmbed.setDescription(snipes[value].messageContent ?? "ㅤ").setImage(null).setAuthor({name: snipes[value].messageAuthor, iconURL: snipes[value].messageAuthorAvatar}).setFooter({text: `Borrado ${timeDifference(Date.now(), snipes[value].messageTimestamp)}`, iconURL: `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/282/alarm-clock_23f0.png`}).setTimestamp(snipes[value].messageTimestamp)]});
         } else if (archivos.length == 1) {

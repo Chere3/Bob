@@ -1,7 +1,7 @@
 import { Client, GuildMember, Role } from 'discord.js';
 import { db, managerError, sentry, transaction } from '../../index';
 import { warn } from '../../Database/schemas/User';
-import { cache, cachetype, cachedWarn } from '../constants/cache';
+import { cacheStructure, cachetype, cachedWarn } from '../constants/cache';
 import { ban, muted } from "../constants/moderationDataManager";
 
 /**
@@ -28,7 +28,7 @@ export class CacheManager {
      * @author Cheree
      */
 
-    get(): cache {
+    get(): cacheStructure {
         managerError;
         try {
         return db.getData(`/`)
@@ -105,7 +105,7 @@ export class CacheModerationManager extends CacheManager {
 
         const a = [] as cachedWarn[];
 
-        const data = db.getData("/") as cache;
+        const data = db.getData("/") as cacheStructure;
 
         for (const cachedWarn of data.warns) {
             a.push(cachedWarn);

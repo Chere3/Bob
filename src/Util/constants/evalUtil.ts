@@ -9,8 +9,8 @@ import { getApiUser, getBannedUser, getChannel, getColor, getMember, getPerson, 
 import { getDBChannel } from "../managers/channelManager";
 import { getUserDB } from "../Functions/utils/DBUtil";
 import { moderationBotLogs } from '../managers/loggerManager';
+import { PrivateInstances } from "../managers/privateIntancesManager";
 import { DBUser, userModel } from '../../Database/schemas/User';
-import { db } from '../../index';
 import { CacheManager } from '../managers/cacheManager';
 import { checkLevel, Translatetime } from './globals';
 import { inspect } from "util";
@@ -22,6 +22,7 @@ import { descriptions } from "../../Database/schemas/descriptions";
 import { Channel } from "diagnostics_channel";
 import { levels } from "./moderationDataManager";
 import { JsonDB } from "node-json-db";
+import * as index from "../..";
 
 export const snipeUtil = {
     checkImages: checkImage,
@@ -76,8 +77,9 @@ export const moderationutil = {
 }
 
 export const cacheUtil = {
-    cache: db,
-    cacheManager: CacheManager
+    cache: index.db, 
+    cacheManager: CacheManager,
+    privateInstances: PrivateInstances
 }
 
 export const APIUtil = {

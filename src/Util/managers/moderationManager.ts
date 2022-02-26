@@ -7,7 +7,7 @@ import { moderationBotLogs } from './loggerManager';
 import { historialModel, historial } from '../../Database/schemas/ModerationServer';
 import { getUserDB } from '../Functions/utils/DBUtil';
 import { CacheModerationManager, CacheManager } from './cacheManager';
-import { cachedWarn } from '../constants/cache';
+import { cachedWarn, cacheStructure } from '../constants/cache';
 import { Translatetime } from '../constants/globals';
 
 
@@ -30,7 +30,7 @@ export class moderationUtil {
         const now = Date.now();
         const dataUser = await getDBUser(memberID);
         const dataMod = await getDBUser(moderatorID);
-        const cache = db.getData("/warns") as cachedWarn[];
+        const cache = global.client.cache.getData("/warns") as cachedWarn[];
         const dataHistorial = await new historialManager(null, null, null, null, null, null, null, guildID).getHistorial();
     
         const warn = dataUser.warnsHistory.find(x => x.case == caseNumber);
@@ -90,7 +90,7 @@ export class moderationUtil {
         await userModel.findOneAndUpdate({ id: memberID }, { warnsHistory: a, warns: Number(a.length) || 0});
         await userModel.findOneAndUpdate({ id: moderatorID }, { modLogs: b });
         await historialModel.findOneAndUpdate({ id: guildID }, { warnsDelete: c });
-        await db.push("/warns", cachefilter);
+db.push("/warns", cachefilter);
         } catch (error) {
             sentry.captureException(error);
         } finally {
@@ -765,7 +765,7 @@ export class muteManager extends moderationUtil {
         await new moderationBotLogs(this.member, this.author, this.reason, caseNumber).sendUnmuteLog();
 
 
-        const data = db.getData("/muted") as muted[];
+        const data = global.client.cache.getData("/muted") as muted[];
     
         const mute = data.find(m => m.userID == this.member.id);
         if (!mute) return this.member.roles.remove(muteRole.id);
@@ -773,9 +773,8 @@ export class muteManager extends moderationUtil {
         await mute.roles.map(x => this.member.roles.add(x));
         this.member.roles.remove(muteRole.id);
     
-        const filter = data.filter(m => m.userID !== this.member.id);
-    
-         db.push(`/muted`, filter);
+        const filter = data.filter(m => m.userID !== this.member.id); 
+        db.push(`/muted`, filter);
     
          return {
             id: this.member.id,
@@ -797,7 +796,7 @@ export class muteManager extends moderationUtil {
 async automaticUnmute(): Promise<unmuteAction[]> {
     managerError
     try {
-    const data = db.getData("/muted") as muted[];
+    const data = global.client.cache.getData("/muted") as muted[];
     const filter = data.filter(m => m.time < Date.now());
 
     if (!filter || filter.length < 1) return;
@@ -1157,8 +1156,7 @@ async delwarns() {
     await new moderationBotLogs(this.member, this.author, this.reason, a.caseNumber, null).sendWarnsDeleteLog(userDB.warnsHistory);
     await userModel.findOneAndUpdate({id: this.member.id}, {warnsHistory: [], warns: 0});
     await userModel.findOneAndUpdate({id: this.author.id}, {modLogs: modLogs});
-    await historialModel.findOneAndUpdate({id: this.member.guild.id}, {warnsDelete: deletewarn});
-    await db.push("/warns", filter3);
+    await historialModel.findOneAndUpdate({id: this.member.guild.id}, {warnsDelete: deletewarn});db.push("/warns", filter3);
 
     return a;
     } catch (error) {
@@ -1289,8 +1287,7 @@ async bulkWarnDelete(cachedWarnsToDelete: cachedWarn[]) {
         await new moderationBotLogs(this.author.guild.members.cache.get(cacheWarn.id), this.author, `Automoderador, eliminados warns con más de 7 días de existencia.`, caseN, null, warn.case).sendWarnDeleteLog();
     }
 
-    // edit the cache with the new warns
-    db.push("/warns", filter);
+    // edit the cache with the newdb.push("/warns", filter);
     return b;
 } catch (error) {
     sentry.captureException(error);
@@ -1476,7 +1473,7 @@ export class banManager extends moderationUtil {
         if (!time) {
             const userdb = await getDBUser(this.member.id);
             const moddb = await getDBUser(this.moderator.id);
-            const cache = await this.moderator.client.cache;
+            const cache = await this.moderator.client.cache as cacheStructure;
 
             if (this.force == false) {
                 if (!this.member) throw Error(`El miembro es invalido`);
@@ -1534,7 +1531,7 @@ export class banManager extends moderationUtil {
             try {
                 await new moderationBotLogs(this.member, this.moderator, this.reason || `Sin razón`, this.case).sendBanLog();
                 await this.member.ban({reason: this.reason, days: days})
-                await db.push("/bans", d)
+                await  db.push("/bans", d)
                 await historialModel.findOneAndUpdate({id: this.member.guild.id}, {bans: a, all: b});
                 await userModel.findOneAndUpdate({id: this.member.id}, {bans: userdb.bans + 1});
                 
@@ -1547,7 +1544,7 @@ export class banManager extends moderationUtil {
         } else {
             const userdb = await getDBUser(this.member.id);
             const moddb = await getDBUser(this.moderator.id);
-            const cache = this.moderator.client.cache;
+            const cache = this.moderator.client.cache as cacheStructure;
 
             if (this.force == false) {
                 if (!this.member) throw Error(`El miembro es invalido`);
@@ -1668,7 +1665,7 @@ export class banManager extends moderationUtil {
         try {
             // update the cache
             await historialModel.findOneAndUpdate({id: this.moderator.guild.id}, {all: a});
-            await db.push("/bans", filtered);
+            db.push("/bans", filtered);
             await new moderationBotLogs(null, this.moderator, this.reason, this.case).sendUnbanLog(userData);
             await this.moderator.guild.members.unban(userData, `${this.moderator.user.tag}: ${this.reason}`);
             
@@ -1693,7 +1690,7 @@ export class banManager extends moderationUtil {
 
         if (!filter || filter[0] == undefined) return;
 
-        await db.push("/bans", filter2);
+db.push("/bans", filter2);
 
         for (const ban of filter) {
             await this.moderator.guild.members.unban(ban.id, this.reason);
