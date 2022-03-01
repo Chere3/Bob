@@ -1,0 +1,26 @@
+{
+    "name": "fypbot",
+    "version": "2.0.0",
+    "description": ":Un bot destinado a las herramientas principales del servidor de F&P",
+    "main": "src/index.ts",
+    "engines": {
+        "node": ">=14.x"
+    },
+    "scripts": {
+        "start": "npx ts-node src/index.ts",
+        "test": "nodemon src/index.ts --exec \"ts-node src/index.ts\" -e ts, json"
+    },
+    "keywords": [
+        "discord.js",
+        "botTemplate",
+        "fypBot"
+    ],
+    "author": "Cheree",
+    "repository": {
+        "url": "https://github.com/Chere3/FyP-bot"
+    },
+    "license": "Apache-2.0",
+    "dependencies": {
+        "discord.js": "^13.6.0"
+    }
+}
