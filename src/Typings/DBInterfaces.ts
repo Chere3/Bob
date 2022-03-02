@@ -46,3 +46,9 @@ export interface social {
     licks: number
     sucks: number
 }
+
+export interface DBUser {
+    id: string
+    registeredAt: number
+    social: social
+}
