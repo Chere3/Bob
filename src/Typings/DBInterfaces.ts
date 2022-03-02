@@ -70,3 +70,22 @@ export interface images {
     licks: string[],
     sucks: string[]
 }
+
+export interface descriptions {
+    id: string,
+    hug: string[],
+    kiss: string[],
+    pats: string[],
+    happy: string[],
+    sad: string[],
+    angry: string[],
+    love: string[],
+    hate: string[],
+    confused: string[],
+    bored: string[],
+    scared: string[],
+    fucks: string[],
+    licks: string[],
+    sucks: string[]
+}
+
