@@ -1,7 +1,11 @@
+// @ts-nocheck
+
 import { Client } from "discord.js"
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import Captain from "captainjs"
+import { FYPBot } from "../../Typings/DiscordExtends";
+import { config } from "../../config";
 
 
 /**
@@ -31,6 +35,8 @@ export class clientConstructor {
             allowedMentions: {repliedUser: false, parse: ["users"]}
         });
 
+        global.consola.log("| Discord.js client created |")
+
         const data = {
             client: discordJSClient
         }
@@ -43,6 +49,7 @@ export class clientConstructor {
      */
 
     makeCache() {
+        global.consola.log("| Cache created |")
         return new JsonDB(new Config("cache", true, true, "/"))
     }
 
@@ -52,19 +59,23 @@ export class clientConstructor {
 
     catchErrors() {
         this.process.on('rejectionHandled', async (a) => {
-            global.consola.error(a)
+            this.makeConsola().error(a)
         });
 
         this.process.on("uncaughtException", async (a) => {
-            global.consola.error(a.name);
-            global.consola.error(a.message);
+            this.makeConsola().error(a.name);
+            this.makeConsola().error(a.message);
             console.error(a.stack);
         });
 
         this.process.on('unhandledRejection', async (a) => {
-            global.prettyConsole.error(a)
+            this.makeConsola().error(a)
         })
     }
+
+    /**
+     * @method Creates the global consola.
+     */
 
     makeConsola() {
         global.consola = new Captain.Console({
@@ -76,10 +87,33 @@ export class clientConstructor {
             error_prefix: "§cError",
             info_prefix: "§bInfo",
             debug_prefix: "§bDebug",
-        })
+        }) as any
 
-        return global.consola
+        global.consola.log("| Consola created |")
+
+        return global.consola as any
     }
 
+    /**
+     * @method The central start data.
+     */
 
+    async centralData() {
+        const client = await this.makeClient()
+        const cache = await this.makeCache()
+        const consola = await this.makeConsola()
+        const errors = await this.catchErrors()
+        const ready = await client.client.login(this.process.env.TOKEN)
+
+        return {
+            completeClient: client.client,
+            WS: client.client.ws,
+            cache: cache,
+            DB: undefined,
+            config: config
+        } as FYPBot
+    }
 }
+
+
+export default clientConstructor
