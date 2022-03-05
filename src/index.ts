@@ -1,7 +1,6 @@
 import clientConstructor from "./Managers/ClientData/centralData";
 // @ts-ignore
 import Captain from "captainjs"
-
 // @ts-ignore
 global.consola = new Captain.Console({
     use_colors: true,

@@ -13,5 +13,9 @@ export const config = {
             cache: process.env.REDIS,
             mongoDB: process.env.MONGO_URI
         }
+    },
+    bot: {
+        prefixes: ["!f", "!", "."],
+        owner: "852588734104469535"
     }
 }

@@ -4,8 +4,11 @@ import { Client } from "discord.js"
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import Captain from "captainjs"
+import * as Sentry from "@sentry/node"
+import * as Tracing from "@sentry/tracing"
 import { FYPBot } from "../../Typings/DiscordExtends";
 import { config } from "../../config";
+import mongoose from "mongoose";
 
 
 /**
@@ -95,21 +98,58 @@ export class clientConstructor {
     }
 
     /**
+     * @method Makes the DB.
+     */
+
+    async makeDB() {
+        global.consola.log("| Connected to the DB |")
+        return mongoose.connect(config.authData.DBS.mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, retryWrites: true})
+    }
+
+    /**
+     * @method Makes the sentry client.
+     */
+
+    async makesSentry() {
+        const {version} = require("../../../package.json");
+
+        global.consola.log("| Sentry initialized |")
+
+        Sentry.init({
+            dsn: process.env.SENTRY,
+            integrations: [
+                new Sentry.Integrations.Http({tracing: true}),
+                new Tracing.Integrations.Mongo({
+                    useMongoose: true
+                })
+            ],
+            tracesSampleRate: 1.0,
+            debug: true,
+            release: version
+        })
+
+        return Sentry
+    }
+
+    /**
      * @method The central start data.
      */
 
     async centralData() {
         const client = await this.makeClient()
         const cache = await this.makeCache()
+        const db = await this.makeDB()
+        const sentry = await this.makesSentry()
         const consola = await this.makeConsola()
         const errors = await this.catchErrors()
         const ready = await client.client.login(this.process.env.TOKEN)
 
         return {
             completeClient: client.client,
-            WS: client.client.ws,
+            gateaway: client.client.ws,
+            sentry: sentry,
             cache: cache,
-            DB: undefined,
+            database: db,
             config: config
         } as FYPBot
     }
