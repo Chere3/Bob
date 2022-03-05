@@ -77,27 +77,6 @@ export class clientConstructor {
     }
 
     /**
-     * @method Creates the global consola.
-     */
-
-    makeConsola() {
-        global.consola = new Captain.Console({
-            use_colors: true,
-            debug: false,
-            format: "§8[§d%time%§8] [%prefix%§8] §7%message%",
-            log_prefix: "§aLog",
-            warn_prefix: "§eWarn",
-            error_prefix: "§cError",
-            info_prefix: "§bInfo",
-            debug_prefix: "§bDebug",
-        }) as any
-
-        global.consola.log("| Consola created |")
-
-        return global.consola as any
-    }
-
-    /**
      * @method Makes the DB.
      */
 
@@ -140,7 +119,6 @@ export class clientConstructor {
         const cache = await this.makeCache()
         const db = await this.makeDB()
         const sentry = await this.makesSentry()
-        const consola = await this.makeConsola()
         const errors = await this.catchErrors()
         const ready = await client.client.login(this.process.env.TOKEN)
 
