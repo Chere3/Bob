@@ -1,6 +1,8 @@
 import clientConstructor from "./Managers/ClientData/centralData";
 // @ts-ignore
 import Captain from "captainjs"
+import { Transaction } from "@sentry/tracing";
+import { FYPBot } from "./Typings/DiscordExtends";
 // @ts-ignore
 global.consola = new Captain.Console({
     use_colors: true,
@@ -13,4 +15,8 @@ global.consola = new Captain.Console({
     debug_prefix: "§bDebug",
 }) as any
 
-new clientConstructor(process).centralData();
+export var shortClient: FYPBot; export var catcher: Transaction;
+new clientConstructor(process).centralData().then(x => {
+    shortClient = x
+    catcher = x.catcher
+})
