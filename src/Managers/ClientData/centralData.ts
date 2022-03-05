@@ -144,10 +144,16 @@ export class clientConstructor {
         const errors = await this.catchErrors()
         const ready = await client.client.login(this.process.env.TOKEN)
 
+        const catcher = Sentry.startTransaction({
+            op: "centralCatcher",
+            name: "centralError"
+        })
+
         return {
             completeClient: client.client,
             gateaway: client.client.ws,
             sentry: sentry,
+            catcher: catcher,
             cache: cache,
             database: db,
             config: config
