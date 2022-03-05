@@ -149,6 +149,8 @@ export class clientConstructor {
             name: "centralError"
         })
 
+        global.consola.log("| Central Error catcher initialited |")
+
         return {
             completeClient: client.client,
             gateaway: client.client.ws,
