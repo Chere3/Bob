@@ -14,3 +14,7 @@ export interface FYPBot {
     DB: typeof mongoose
     config: typeof config
 }
+
+export interface cooldownCommand {
+    command: string,
+}

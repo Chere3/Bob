@@ -1,10 +1,14 @@
 import { Collection } from "discord.js";
+import { kargs } from "../Managers/CommandsManager/NormalCommands/revisionManager";
+import { cooldownCommand } from "./DiscordExtends";
 
 declare module "discord.js" {
     interface Client {
+        cooldowns: Collection<string, cooldownCommand>
+        commands: Collection<string, kargs>
     }
 
-    interface Channel {
+    interface channel {
         nsfw?: boolean
         name: string | null
     }

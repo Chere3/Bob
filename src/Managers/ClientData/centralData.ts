@@ -9,6 +9,7 @@ import * as Tracing from "@sentry/tracing"
 import { FYPBot } from "../../Typings/DiscordExtends";
 import { config } from "../../config";
 import mongoose from "mongoose";
+import handlers from "./handler";
 
 
 /**
@@ -62,17 +63,17 @@ export class clientConstructor {
 
     catchErrors() {
         this.process.on('rejectionHandled', async (a) => {
-            this.makeConsola().error(a)
+            global.consola.error(a)
         });
 
         this.process.on("uncaughtException", async (a) => {
-            this.makeConsola().error(a.name);
-            this.makeConsola().error(a.message);
+            global.consola.error(a.name);
+            global.consola.error(a.message);
             console.error(a.stack);
         });
 
         this.process.on('unhandledRejection', async (a) => {
-            this.makeConsola().error(a)
+            global.consola.error(a)
         })
     }
 
@@ -111,6 +112,15 @@ export class clientConstructor {
     }
 
     /**
+     * @method Makes the command and get up to the collections
+     */
+
+    async makeHandler(client: Client) {
+        handlers(client)
+        global.consola.log(`| Putted all the commands in collection |`)
+    }
+
+    /**
      * @method The central start data.
      */
 
@@ -119,6 +129,7 @@ export class clientConstructor {
         const cache = await this.makeCache()
         const db = await this.makeDB()
         const sentry = await this.makesSentry()
+        const handler = await this.makeHandler(client)
         const errors = await this.catchErrors()
         const ready = await client.client.login(this.process.env.TOKEN)
 
