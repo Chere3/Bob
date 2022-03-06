@@ -40,7 +40,6 @@ interface infoCommandOptions {
 
 export class revisionManager {
     client: Client
-    config: typeof config
     name: string
     infoOptions: infoCommandOptions
     commandOptions: commandOptions
@@ -51,7 +50,6 @@ export class revisionManager {
 
     constructor(client: Client, kargs: kargs) {
         this.client = client;
-        this.config = config
         this.name = kargs.name;
         this.infoOptions = kargs.infoCommandOptions;
         this.commandOptions = kargs.commandOptions;
@@ -97,8 +95,10 @@ export class revisionManager {
             }
         }
 
-        return true;
+        return false;
     }
+
+    run(ctx) {}
 }
 
 
