@@ -37,10 +37,11 @@ export class run {
     }
 
     get member() {
-        return this.member
+        return this.message.member
     }
 
     get members() {
-        return this.guild.members.cache
+        // @ts-ignore
+        return this.message.guild.members.cache
     }
 }

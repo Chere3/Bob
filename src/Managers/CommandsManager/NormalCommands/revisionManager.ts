@@ -1,8 +1,10 @@
+// @ts-nocheck
 import { Client } from "discord.js"
 import { Message, MessageEmbed } from "discord.js"
 import emojis from "../../../assets/emojis"
 import roles from "../../../assets/roles"
 import {config} from "../../../config"
+import { run } from "./runManager"
 
 export interface kargs {
     name: string,
@@ -57,6 +59,10 @@ export class revisionManager {
     }
 
     async revision(message: Message) {
+
+        
+
+
         /**
          * @constant de - The default embed to send errors or warnings.
          */
@@ -70,24 +76,24 @@ export class revisionManager {
         if (!this.infoOptions.examples[0]) throw TypeError(`[OB] Los ejemplos del comando no pueden estar vacíos.`);
 
         // Guild Options
-        if (this.channelAndGuildOptions.developer && config.bot.owner !== message.author.id) return de(`Este comando es exclusivo para mis programadores.`);
-        if (this.channelAndGuildOptions.highStaff && !message.member.roles.cache.has(roles.creator)) {if (!message.member.roles.cache.has(roles.owner)) return de(`Este comando es exclusivo para miembros del staff.`);}
-        if (this.channelAndGuildOptions.mediumStaff && !message.member.permissions.has(`MANAGE_GUILD`)) return de(`Este comando es exclusivo para administradores`);
-        if (this.channelAndGuildOptions.lowStaff && !message.member.permissions.has(`MANAGE_MESSAGES`)) return de(`Este comando es exclusivo para moderadores`);
-        if (this.channelAndGuildOptions.onlyGuild && !message.guild) return de(`Este comando solo puede ser usado en un servidor.`);
+        if (this.channelAndGuildOptions?.developer && config.bot.owner !== message.author.id) return de(`Este comando es exclusivo para mis programadores.`);
+        if (this.channelAndGuildOptions?.highStaff && !message.member.roles.cache.has(roles.creator)) {if (!message.member.roles.cache.has(roles.owner)) return de(`Este comando es exclusivo para miembros del staff.`);}
+        if (this.channelAndGuildOptions?.mediumStaff && !message.member.permissions.has(`MANAGE_GUILD`)) return de(`Este comando es exclusivo para administradores`);
+        if (this.channelAndGuildOptions?.lowStaff && !message.member.permissions.has(`MANAGE_MESSAGES`)) return de(`Este comando es exclusivo para moderadores`);
+        if (this.channelAndGuildOptions?.onlyGuild && !message.guild) return de(`Este comando solo puede ser usado en un servidor.`);
         //@ts-expect-error
-        if (this.channelAndGuildOptions.nsfw && !message.channel.nsfw) return de(`Este comando solo puede ser usado en un canal NSFW.`);
+        if (this.channelAndGuildOptions?.nsfw && !message.channel.nsfw) return de(`Este comando solo puede ser usado en un canal NSFW.`);
 
         // Command Options
-        if (this.commandOptions.expectedArgsMin > this.commandOptions.expectedArgs) throw TypeError(`El número de argumentos es incorrecto.`);
-        if (this.commandOptions.expectedArgsMin > 0 && message.content.split(` `).slice(1).length < this.commandOptions.expectedArgsMin) return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***Este comando necesita de más argumentos***__\n\n\`\`\`${this.infoOptions.usage}\n${this.infoOptions.examples.map(x => `${x}\n`)}\`\`\``).setColor(`PURPLE`)]});
-        if (this.commandOptions.status && config.bot.owner !== message.author.id) return de(`Este comando está en desarrollo.`);
-        if (this.commandOptions.cooldown && this.commandOptions.cooldown > 0 && config.bot.owner !== message.author.id) {
-            const cooldown = this.commandOptions.cooldown;
-            const cooldowns = this.client.cooldowns.get(message.author.id);
-            if (cooldowns) {if (cooldowns.command !== this.name) {this.client.cooldowns.set(message.author.id, {command: this.name});
+        if (this.commandOptions?.expectedArgsMin > this.commandOptions.expectedArgs) throw TypeError(`El número de argumentos es incorrecto.`);
+        if (this.commandOptions?.expectedArgsMin > 0 && message.content.split(` `).slice(1).length < this.commandOptions.expectedArgsMin) return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***Este comando necesita de más argumentos***__\n\n\`\`\`${this.infoOptions.usage}\n${this.infoOptions.examples.map(x => `${x}\n`)}\`\`\``).setColor(`PURPLE`)]});
+        if (this.commandOptions?.status && config.bot.owner !== message.author.id) return de(`Este comando está en desarrollo.`);
+        if (this.commandOptions?.cooldown && this.commandOptions.cooldown > 0 && config.bot.owner !== message.author.id) {
+            const cooldown = this.commandOptions?.cooldown;
+            const cooldowns = global.cooldowns.get(message.author.id);
+            if (cooldowns) {if (cooldowns.command !== this.name) {global.cooldowns.set(message.author.id, {command: this.name});
             setTimeout(() => {
-                        this.client.cooldowns.delete(message.author.id);
+                        global.cooldowns.delete(message.author.id);
                     }, cooldown * 1000);
                 } else {
                     return de(`Este comando esta en cooldown, espera aaa.`);
@@ -98,7 +104,7 @@ export class revisionManager {
         return false;
     }
 
-    run(ctx) {}
+    run(ctx: run) {}
 }
 
 
@@ -137,6 +143,8 @@ export class botCommand {
          * The name of the command
          * @type {string}
          */
+
+        if (!data.description) return;
 
         this.name = d.name ?? null;
 

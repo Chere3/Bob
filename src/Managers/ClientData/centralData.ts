@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Client } from "discord.js"
+import { Client, Collection } from "discord.js"
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import Captain from "captainjs"
@@ -33,13 +33,14 @@ export class clientConstructor {
      * @method makeClient - Makes the discord.js client.
      */
 
-    makeClient() {
+    async makeClient() {
         const discordJSClient = new Client({
             intents: ["DIRECT_MESSAGES","DIRECT_MESSAGE_REACTIONS","DIRECT_MESSAGE_TYPING","GUILDS","GUILD_BANS","GUILD_EMOJIS_AND_STICKERS","GUILD_INTEGRATIONS","GUILD_INVITES","GUILD_MEMBERS","GUILD_MESSAGES","GUILD_MESSAGE_REACTIONS","GUILD_MESSAGE_TYPING","GUILD_PRESENCES","GUILD_VOICE_STATES","GUILD_WEBHOOKS"],
             allowedMentions: {repliedUser: false, parse: ["users"]}
         });
 
         global.consola.log("| Discord.js client created |")
+        
 
         const data = {
             client: discordJSClient
