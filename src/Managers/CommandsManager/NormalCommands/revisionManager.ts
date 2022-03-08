@@ -59,15 +59,37 @@ export class revisionManager {
     }
 
     async revision(message: Message) {
+        // Set the default values
 
-        
+        this.name = this.name ?? null;
+        this.infoOptions = {
+            usage: this.infoOptions?.usage ?? null,
+            examples: this.infoOptions?.examples ?? [],
+            description: this.infoOptions?.description ?? null,
+        }
 
+        this.commandOptions = {
+            aliases: this.commandOptions?.aliases ?? [],
+            status: this.commandOptions?.status ?? false,
+            expectedArgs: this.commandOptions?.expectedArgs ?? 0,
+            expectedArgsMin: this.commandOptions?.expectedArgsMin ?? 0,
+            cooldown: this.commandOptions?.cooldown ?? 0,
+        }
+
+        this.channelAndGuildOptions = {
+            onlyGuild: this.channelAndGuildOptions?.onlyGuild ?? false,
+            nsfw: this.channelAndGuildOptions?.nsfw ?? false,
+            lowStaff: this.channelAndGuildOptions?.lowStaff ?? false,
+            mediumStaff: this.channelAndGuildOptions?.mediumStaff ?? false,
+            highStaff: this.channelAndGuildOptions?.highStaff ?? false,
+            developer: this.channelAndGuildOptions?.developer ?? false,
+        }
 
         /**
          * @constant de - The default embed to send errors or warnings.
          */
 
-        function de(text: string) {return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***${de}***__`).setColor(`PURPLE`)]})}
+        function de(text: string) {return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***${text}***__`).setColor(`PURPLE`)]})}
 
         // Estable options to skip errors.
         if (!this.name) throw TypeError(`[OB] El nombre del comando no puede estar vacío.`);
@@ -86,7 +108,7 @@ export class revisionManager {
 
         // Command Options
         if (this.commandOptions?.expectedArgsMin > this.commandOptions.expectedArgs) throw TypeError(`El número de argumentos es incorrecto.`);
-        if (this.commandOptions?.expectedArgsMin > 0 && message.content.split(` `).slice(1).length < this.commandOptions.expectedArgsMin) return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***Este comando necesita de más argumentos***__\n\n\`\`\`${this.infoOptions.usage}\n${this.infoOptions.examples.map(x => `${x}\n`)}\`\`\``).setColor(`PURPLE`)]});
+        if (this.commandOptions?.expectedArgsMin > 0 && message.content.split(` `).slice(1).length < this.commandOptions.expectedArgsMin) return message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***Este comando necesita de más argumentos***__\n\n**Uso y ejemplos:**\`\`\`${this.infoOptions.usage}\n${this.infoOptions.examples.map(x => `${x}\n`)}\`\`\``).setColor(`PURPLE`)]});
         if (this.commandOptions?.status && config.bot.owner !== message.author.id) return de(`Este comando está en desarrollo.`);
         if (this.commandOptions?.cooldown && this.commandOptions.cooldown > 0 && config.bot.owner !== message.author.id) {
             const cooldown = this.commandOptions?.cooldown;

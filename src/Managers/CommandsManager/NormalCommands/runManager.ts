@@ -1,4 +1,5 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
+import emojis from "../../../assets/emojis";
 import { config } from "../../../config";
 
 export class run {
@@ -44,4 +45,6 @@ export class run {
         // @ts-ignore
         return this.message.guild.members.cache
     }
+
+    de(text: string) {return this.message.reply({embeds: [new MessageEmbed().setDescription(`${emojis.internal_error} __***${text}***__`).setColor(`PURPLE`)]})}
 }
