@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed, MessageOptions, MessagePayload, ReplyOptions } from "discord.js";
 import emojis from "../../../assets/emojis";
 import { config } from "../../../config";
 
@@ -25,12 +25,12 @@ export class run {
         return this.message.author
     }
 
-    get reply() {
-        return this.message.reply
+    reply(a: string  | MessagePayload | ReplyOptions) {
+        return this.message.reply(a)
     }
 
-    get send() {
-        return this.message.channel.send
+    send(a: string | MessagePayload | MessageOptions) {
+        return this.message.channel.send(a)
     }
 
     get guild() {

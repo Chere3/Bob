@@ -1,6 +1,6 @@
 import { Client, MessageEmbed } from "discord.js";
-import { botCommand, revisionManager } from "../Managers/CommandsManager/NormalCommands/revisionManager";
-import { run } from "../Managers/CommandsManager/NormalCommands/runManager";
+import { botCommand, revisionManager } from "../../Managers/CommandsManager/NormalCommands/revisionManager";
+import { run } from "../../Managers/CommandsManager/NormalCommands/runManager";
 
 export default class evalCommand extends revisionManager {
     constructor(client: Client) {

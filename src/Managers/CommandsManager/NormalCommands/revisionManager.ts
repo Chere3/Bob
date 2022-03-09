@@ -8,8 +8,8 @@ import { run } from "./runManager"
 
 export interface kargs {
     name: string,
-    infoCommandOptions?: infoCommandOptions,
-    commandOptions?: commandOptions,
+    infoCommandOptions: infoCommandOptions,
+    commandOptions: commandOptions,
     channelAndGuildOptions?: channelAndGuildOptions
 }
 
