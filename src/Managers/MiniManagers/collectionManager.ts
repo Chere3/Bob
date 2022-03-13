@@ -203,7 +203,7 @@ export class messageCollect extends messageCollector {
 
         const components = [];
         for (com of this.message.components[0].components) {
-            components.push(com)
+            components.push(com.setDisabled(true))
         }
         const aw2 = new MessageActionRow().addComponents(...components);
         aw1.on("end", async (c) => {
