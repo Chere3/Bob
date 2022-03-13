@@ -8,7 +8,6 @@ export default class evalCommand extends revisionManager {
         .setName(`ping`)
         .setInfoOptions({usage: `ping`, examples: [`ping`], description: `Saca la latencia del bot con este código.`})
         .setCommandOptions({expectedArgs: 0, expectedArgsMin: 0})
-        .setChannelAndGuildOptions({developer: true})
         )
     }
 

@@ -15,7 +15,7 @@ export const config = {
         }
     },
     bot: {
-        prefixes: ["!f", "!", "."],
+        prefixes: ["F !","F!", "f !","f!", "!f", "!", "."],
         owner: "852588734104469535"
     }
 }
