@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, MessageOptions, MessagePayload, ReplyOptions } from "discord.js";
+import { Client, Message, MessageActionRow, MessageButton, MessageEmbed, MessageOptions, MessagePayload, ReplyOptions } from "discord.js";
 import emojis from "../../../assets/emojis";
 import { config } from "../../../config";
 
@@ -31,6 +31,15 @@ export class run {
 
     send(a: string | MessagePayload | MessageOptions) {
         return this.message.channel.send(a)
+    }
+
+    get defaultPaginator() {
+        const b1 = new MessageButton().setCustomId(`right`).setEmoji(emojis.right_arrow).setStyle(`SECONDARY`)
+        const b2 = new MessageButton().setCustomId(`left`).setEmoji(emojis.left_arrow).setStyle(`SECONDARY`);
+        const b3 = new MessageButton().setCustomId(`B`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setLabel(`.`).setDisabled(true);
+        const b4 = new MessageButton().setCustomId(`A`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setLabel(`.`).setDisabled(true);
+
+        return new MessageActionRow().addComponents(b1, b3, b4 ,b2);
     }
 
     get guild() {

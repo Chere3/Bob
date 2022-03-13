@@ -200,14 +200,17 @@ export class messageCollect extends messageCollector {
                 }
             }
         })
-
-        const components = [];
-        for (com of this.message.components[0].components) {
+        
+        aw1.on("end", async (c) => {
+            const components = [];
+        for (const com of this.message.components[0].components) {
             components.push(com.setDisabled(true))
         }
-        const aw2 = new MessageActionRow().addComponents(...components);
-        aw1.on("end", async (c) => {
+
+            const aw2 = new MessageActionRow().addComponents(...components);
             this.message.edit({embeds: [this.message.embeds[0]], components: [aw2]})
         })
+
+        
     }
 }
