@@ -168,6 +168,8 @@ export class messageCollect extends messageCollector {
         this.limit = this.limit ?? 100;
         this.time = this.time ?? 60000;
 
+        console.log(this.embeds)
+
         if (!this.message || !this.embeds[0] || !this.author) throw TypeError(`Los valores obligatorios no se han detectado. Por lo cual no se puede continuar con la operacion`);
         if (!this.message?.components[0]) throw TypeError(`El mensaje que has dado, al parecer no tiene ningun boton, intenta con uno que si tenga.`)
 
@@ -182,16 +184,16 @@ export class messageCollect extends messageCollector {
         aw1.on("collect", async (c) => {
             if (c.member.id !== this.author.id) return c.reply({content: `> __*Esta interaccion no es tuya, debes de ser el autor del mensaje para poder continuar.*__`});
 
-            if (c.customId == "right") {
+            if (c.customId == "left") {
                 if (page !== 0) {
                     --page;
                     c.update({embeds: [this.embeds[page]]})
                 } else {
-                    page = [this.embeds - 1];
+                    page = [this.embeds.length - 1];
                     c.update({embeds: [this.embeds[page]]})
                 }
-            } else if (c.customId == "left") {
-                if (page < this.embeds - 1) {
+            } else if (c.customId == "right") {
+                if (page < this.embeds.length - 1) {
                     page++;
                     c.update({embeds: [this.embeds[page]]})
                 } else {
