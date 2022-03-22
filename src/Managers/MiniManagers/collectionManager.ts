@@ -1,6 +1,9 @@
 // @ts-nocheck
 import { Message, MessageActionRow, MessageEmbed, User } from "discord.js";
 
+/**
+ * The interface of the msgCollector only with buttons and arrows
+ */
 export interface msgCollector {
     embeds: MessageEmbed[];
     message: Message
@@ -10,6 +13,85 @@ export interface msgCollector {
     filter: any
 }
 
+/**
+ * The interface of the msgCollector only with messages and functions
+ */
+
+export interface msgCollector2 {
+    message: Message
+    author: User
+    filter: Function
+    limit: number
+    time: number
+    conditionalOptions: conditionalOptions[]
+}
+
+/**
+ * The object for the if cases of the msgCollector
+ */
+
+export interface conditionalOptions {
+    text: string
+    function: Function
+}
+
+/**
+ * The interface of the msgCollector only with messages and functions
+ */
+
+export class messageOnlyCollector {
+    message: Message
+    author: User
+    filter: Function
+    limit: number
+    time: number
+    conditionalOptions: conditionalOptions[]
+
+    /**
+     * @typedef {Object} - The options of the messageOnlyCollector.
+     * @property {Message} message - The message of the collector.
+     * @property {Function} filter - The filter of the collector.
+     * @property {Number} limit - The limit of the collector.
+     * @property {Number} time - The time of the collector.
+     * @property {conditionalOptions[]} conditionalOptions - The conditional options of the collector.
+     */
+
+
+    /**
+     * @param {msgCollector2} data - The data of the collector.
+     */
+    constructor(data = {} as msgCollector2) {
+        this.setup(data);
+    }
+
+    setup(data) {
+        const d = data as msgCollector2;
+
+        /**
+         * The message of the collector.
+         * @type {Message}
+         */
+
+        this.message = d.message ?? null;
+
+        /**
+         * The filter of the collector.
+         * @type {Function}
+         */
+
+        const f = (a) => a.author.id == d.author.id;
+        this.filter = d.filter ?? f;
+
+        /**
+         * The limit of the collector.
+         * @type {Number}
+         */
+
+        this.limit = d.limit ?? 0;
+
+        
+    }
+}
 /**
  * The constructor of the messageCollector.
  */
@@ -167,8 +249,6 @@ export class messageCollect extends messageCollector {
         this.embeds = this.embeds ?? [];
         this.limit = this.limit ?? 100;
         this.time = this.time ?? 60000;
-
-        console.log(this.embeds)
 
         if (!this.message || !this.embeds[0] || !this.author) throw TypeError(`Los valores obligatorios no se han detectado. Por lo cual no se puede continuar con la operacion`);
         if (!this.message?.components[0]) throw TypeError(`El mensaje que has dado, al parecer no tiene ningun boton, intenta con uno que si tenga.`)

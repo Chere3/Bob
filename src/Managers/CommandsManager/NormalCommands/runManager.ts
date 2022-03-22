@@ -1,6 +1,12 @@
-import { Client, Message, MessageActionRow, MessageButton, MessageEmbed, MessageOptions, MessagePayload, ReplyOptions } from "discord.js";
+import { Client, EmojiIdentifierResolvable, Message, MessageActionRow, MessageButton, MessageEmbed, MessageOptions, MessagePayload, ReplyOptions } from "discord.js";
 import emojis from "../../../assets/emojis";
 import { config } from "../../../config";
+
+interface msgButton {
+    customID?: string | "a"
+    emoji: EmojiIdentifierResolvable
+
+}
 
 export class run {
     message: Message
@@ -36,10 +42,23 @@ export class run {
     get defaultPaginator() {
         const b1 = new MessageButton().setCustomId(`right`).setEmoji(emojis.right_arrow).setStyle(`SECONDARY`)
         const b2 = new MessageButton().setCustomId(`left`).setEmoji(emojis.left_arrow).setStyle(`SECONDARY`);
-        const b3 = new MessageButton().setCustomId(`B`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setLabel(`.`).setDisabled(true);
-        const b4 = new MessageButton().setCustomId(`A`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setLabel(`.`).setDisabled(true);
+        const b3 = new MessageButton().setCustomId(`B`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setDisabled(true);
+        const b4 = new MessageButton().setCustomId(`A`).setEmoji(emojis.rs_inivisble).setStyle(`SECONDARY`).setDisabled(true);
 
         return new MessageActionRow().addComponents(b1, b3, b4 ,b2);
+    }
+
+    buttonCollector(buttons: MessageButton[]) {
+        return new MessageActionRow().addComponents(...buttons);
+    }
+
+    
+
+    b(button: MessageButton) {
+
+        
+
+        return new MessageButton().setEmoji(button.emoji as EmojiIdentifierResolvable ?? null).setStyle(button.style ?? "SECONDARY").setLabel(button.label ?? ".").setDisabled(button.disabled ?? false).setCustomId(button.customId ?? "a");
     }
 
     get guild() {

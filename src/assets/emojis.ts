@@ -19,6 +19,6 @@
     rs_image: "<:rs_image:943547981599227904>",
     rs_censura: "<:rs_censura:943549156650262588>",
     rs_mensaje: "<:rs_mensaje:943548776520486912>",
-    rs_inivisble: ""
+    rs_inivisble: "<:rs_invisible:952389816996229170>"
  }
 export default emojis
