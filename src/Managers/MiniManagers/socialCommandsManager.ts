@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { User } from "@sentry/node";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import emojis from "../../assets/emojis";
@@ -48,7 +50,7 @@ export class imagesUtil {
      }
 
      const imagenes = (await imagesModel.findOne({id: "first"})) as images;
-     const category = imagenes[type];
+     const category = imagenes![type];
 
      category.push(image);
      await imagesModel.findOneAndUpdate({id: "first"}, {[type]: category});
@@ -79,7 +81,7 @@ export class imagesUtil {
         }
 
         const imagenes = (await imagesModel.findOne({id: "first"})) as images;
-        const category = imagenes[type];
+        const category = imagenes![type];
 
         for (const image of images) {
             category.push(image);
@@ -102,7 +104,7 @@ export class imagesUtil {
         if (type && !imagesAPI.find(x => x == type)) throw new Error(`Los parametros que has dado son incorrectos, intenta de nuevo con otros parametros.`);
 
         const imagenes = (await imagesModel.findOne({id: "first"})) as images;
-        const category = type ? imagenes[type] : imagenes;
+        const category = type ? imagenes![type] : imagenes;
 
         return category;
     }
@@ -132,7 +134,7 @@ export class imagesUtil {
         if (!type || !imagesAPI.find(x => x == type)) throw new Error(`Los parametros que has dado son incorrectos, intenta de nuevo con otros parametros.`);
 
         const imagenes = (await imagesModel.findOne({id: "first"})) as images;
-        const category = imagenes[type];
+        const category = imagenes![type];
 
         if (!category[0]) return null;
 
@@ -179,7 +181,7 @@ export class descripcionUtil extends imagesUtil {
         }
 
         const descripciones = (await descriptionsModel.findOne({id: "first"})) as descriptions;
-        const category = descripciones[type];
+        const category = descripciones![type];
 
         category.push(description);
         await descriptionsModel.findOneAndUpdate({id: "first"}, {[type]: category});
@@ -200,7 +202,7 @@ export class descripcionUtil extends imagesUtil {
         if (type && !imagesAPI.find(x => x == type)) throw new Error(`Los parametros que dado son incorrectos, intenta de nuevo con otros parametros.`);
 
         const descripciones = (await descriptionsModel.findOne({id: "first"})) as descriptions;
-        const category = type ? descripciones[type] : descripciones;
+        const category = type ? descripciones![type] : descripciones;
 
         return category;
     }
@@ -278,7 +280,7 @@ export class numbersUtil extends descripcionUtil {
             };
         
             const a = userModel.findOneAndUpdate({ id: id }, { social: hugconfig });
-            return (await a).social.hugs;
+            return (await a)!.social!.hugs;
           } else if (type == "kiss") {
             const kisses = user.social.kisses + 1;
         
@@ -636,12 +638,16 @@ export class socialCommandsManager extends numbersUtil {
         }
 
         const desc = await this.getRandomDescription(this.command) as string
-        if (!desc) return null; 
-        const format = desc.replace(/{user}/g, this.member.displayName).replace(/{author}/g, this.message.member.displayName);
+        if (!desc) return {
+            desc: null,
+            user: this!.member,
+            author: this!.message.member
+        }
+        const format = desc.replace(/{user}/g, this!.member!.displayName).replace(/{author}/g, this.message!.member!.displayName);
         return {
             desc: format,
-            user: this.member,
-            author: this.message.member
+            user: this!.member,
+            author: this!.message.member
         } as result
     }
 
@@ -653,10 +659,10 @@ export class socialCommandsManager extends numbersUtil {
         const description = await this.getFinalDescription(), image = await this.getRandomImage(this.command), number = await this.getNumber(this.member.id, this.command), user = await new DBMain().getUser(this.message.author.id);
 
         const finalEmbed = new MessageEmbed()
-        .setAuthor({name: description?.desc ?? "error | error puesto en la base de datos. Solucionando automaticamente...", iconURL: description.desc == undefined ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU" : description.author.displayAvatarURL() ?? description.author.user.displayAvatarURL()})
+        .setAuthor({name: description.desc ?? "error | error puesto en la base de datos. Solucionando automaticamente...", iconURL: description!.desc == undefined ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU" : description!.author.displayAvatarURL() ?? description!.author.user.displayAvatarURL()})
         .setColor(`PURPLE`)
         .setImage(image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU")
-        .setFooter({text: number == undefined ? "Error." : `${number}`, iconURL: description.user.displayAvatarURL() ?? description.user.user.displayAvatarURL()});
+        .setFooter({text: number == undefined ? "Error." : `${number}`, iconURL: description!.user.displayAvatarURL() ?? description!.user.user.displayAvatarURL()});
 
         interface finalSocialCommand {
             desc: string

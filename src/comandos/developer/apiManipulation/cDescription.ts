@@ -24,7 +24,6 @@ export default class cDescription extends revisionManager {
                     case "adddesc":
                         a.update({embeds: [new MessageEmbed().setAuthor({name: `Agregar descripcion`}).setColor(`PURPLE`).setDescription(`Escribe la descripcion que quieres agregar.`)], components: [b.buttonCollector([new MessageButton().setDisabled(true).setStyle(`SECONDARY`).setEmoji(emojis.rs_inivisble).setCustomId(`omg`)])]});
                         const p = await b.channel.awaitMessages({filter: (m) => m.member!.user!.id == b.member!.id, time: 60000, max: 1}); if (!p?.first()) return a.update({embeds: [new MessageEmbed().setAuthor({name: `Agregar descripcion`}).setColor(`PURPLE`).setDescription(`Se ha agotado el tiempo de espera.`)], components: [b.buttonCollector([new MessageButton().setDisabled(true).setStyle(`SECONDARY`).setEmoji(emojis.rs_inivisble).setCustomId(`omg`)])]});
-
                         break;
                     case "deldesc":
                         a.update({embeds: [new MessageEmbed().setAuthor({name: `Eliminar descripcion`}).setColor(`PURPLE`).setDescription(`Escribe la descripcion que quieres eliminar.`)]});

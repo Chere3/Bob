@@ -4,6 +4,7 @@ import { run } from "../../Managers/CommandsManager/NormalCommands/runManager";
 import util from "util"
 import { messageCollect, messageCollector } from "../../Managers/MiniManagers/collectionManager";
 import utilManager from "../../Managers/MiniManagers/utilManager";
+import { socialCommandsManager } from "../../Managers/MiniManagers/socialCommandsManager";
 
 export default class evalCommand extends revisionManager {
     constructor(client: Client) {
@@ -18,6 +19,7 @@ export default class evalCommand extends revisionManager {
     async run(b: run) {
         const msgCollector = messageCollect
         const utils = utilManager
+        const socialCommands = socialCommandsManager
         const embed = new MessageEmbed().setColor(`PURPLE`)
 
         try {

@@ -11,6 +11,7 @@ export class DBMain {
         var user: any = await userModel.findOne({id: id}).catch(err => err as null);
         if (!user) {
             const usuario = new userModel({id: id});
+            // @ts-ignore
             user = await usuario.save().catch(err => global.consola.error(err));
         }
 
