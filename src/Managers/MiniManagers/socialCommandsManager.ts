@@ -1,12 +1,15 @@
 // @ts-nocheck
 
 import { User } from "@sentry/node";
+import { Client } from "@sentry/types";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import emojis from "../../assets/emojis";
 import { descriptionsModel } from "../../DB/mongoDBSchemas/API/descriptions";
 import { imagesModel } from "../../DB/mongoDBSchemas/API/images";
 import { userModel } from "../../DB/mongoDBSchemas/Discord/user";
 import { descriptions, images } from "../../Typings/DBInterfaces";
+import { botCommand, revisionManager } from "../CommandsManager/NormalCommands/revisionManager";
+import { run } from "../CommandsManager/NormalCommands/runManager";
 import { DBMain } from "./DBMainManager";
 
 export type imagesAPI = | "hug" | "kiss" | "pat" | "happy" | "sad" | "angry" | "love" | "hate" | "confused" | "bored" | "scared" | "fucks" | "licks" | "sucks";
@@ -229,7 +232,7 @@ export class descripcionUtil extends imagesUtil {
      */
 
     async getRandomDescription(type: imagesAPI) {
-        if (!type || !imagesAPI.find(x => x == type)) throw new Error(`Los parametros que dado son incorrectos, intenta de nuevo con otros parametros.`);
+        if (!type || imagesAPI.find(x => x == type) == undefined) throw new Error(`Los parametros que dado son incorrectos, intenta de nuevo con otros parametros.`);
 
         const descripciones = (await descriptionsModel.findOne({id: "first"})) as descriptions;
         const category = descripciones[type];
@@ -641,13 +644,13 @@ export class socialCommandsManager extends numbersUtil {
         if (!desc) return {
             desc: null,
             user: this!.member,
-            author: this!.message.member
+            author: this.message.member
         }
-        const format = desc.replace(/{user}/g, this!.member!.displayName).replace(/{author}/g, this.message!.member!.displayName);
+        const format = desc.replace(/{user}/g, this.member.displayName).replace(/{author}/g, this.message!.member!.displayName);
         return {
             desc: format,
-            user: this!.member,
-            author: this!.message.member
+            user: this.member,
+            author: this.message.member
         } as result
     }
 
@@ -656,10 +659,10 @@ export class socialCommandsManager extends numbersUtil {
      */
 
     async run() {
+        try {
         const description = await this.getFinalDescription(), image = await this.getRandomImage(this.command), number = await this.getNumber(this.member.id, this.command), user = await new DBMain().getUser(this.message.author.id);
-
         const finalEmbed = new MessageEmbed()
-        .setAuthor({name: description.desc ?? "error | error puesto en la base de datos. Solucionando automaticamente...", iconURL: description!.desc == undefined ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU" : description!.author.displayAvatarURL() ?? description!.author.user.displayAvatarURL()})
+        .setAuthor({name: description?.desc ?? "error | error puesto en la base de datos. Solucionando automaticamente...", iconURL: description!.desc == undefined ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU" : description!.author.displayAvatarURL() ?? description!.author.user.displayAvatarURL()})
         .setColor(`PURPLE`)
         .setImage(image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU")
         .setFooter({text: number == undefined ? "Error." : `${number}`, iconURL: description!.user.displayAvatarURL() ?? description!.user.user.displayAvatarURL()});
@@ -695,6 +698,11 @@ export class socialCommandsManager extends numbersUtil {
             error: `No se detecto una imagen en el comando "${this.command}"`
         } as error
 
+        if (this.member.id == this.message.author.id) return {
+            messageEmbed: embed.setDescription(`${emojis.perro_tonto} *No puedes hacer este comando a ti mismo.*`),
+            error: `No puedes hacer comandos sociales hacia ti mismo.`
+        }
+
         return {
             desc: description.desc,
             image: image,
@@ -703,6 +711,40 @@ export class socialCommandsManager extends numbersUtil {
             author: description.author,
             messageEmbed: finalEmbed
         } as finalSocialCommand
+        } catch (e) {
+            this.message.client.sentry.captureException(e);
+            return {
+                messageEmbed: new MessageEmbed().setDescription(`${emojis.perro_tonto} *Ha ocurrido un error interno, este sera solucionado pronto.*`).setColor("PURPLE"),
+                error: e
+            } as error
+        } finally {
+            this.message.client.catcher.finish();
+        }
         
+        
+    }
+
+    /**
+     * @method Injects the social commands into the bot.
+     * @param client The client of the bot.
+     */
+    async injector(client: Client) {
+        const q = this; var comandoo;
+        for (var comando of imagesAPI) {
+            if (comando.endsWith("s")) {comandoo = comando.slice(0, -1)} else {comandoo = comando}
+            const command = new botCommand().setName(comandoo).setCommandOptions({"expectedArgs": 1, expectedArgsMin: 1}).setInfoOptions({"description": `Comando social (generado automaticamente)`, usage: `${comando} <usuario>`, examples: [`${comando} @user`]});
+            class socialCommand extends revisionManager {
+                constructor(client: Client) {
+                    super(client, command)
+                }
+
+                async run(b: run) {
+                    const a = q.run()
+
+                    b.reply({embeds: [a.messageEmbed]})
+                }
+            }
+            global.commands.set(command.name, new socialCommand(client));
+        }
     }
 }
