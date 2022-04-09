@@ -2,6 +2,7 @@ import * as fs from "fs/promises"
 import * as path from "path"
 import { Client } from "discord.js";
 import { catcher, sentry } from "../..";
+import { socialCommandsManager } from "../MiniManagers/socialCommandsManager";
 
 export default function handlers(client: Client) {
     (async function handleCommands(dir= "../../comandos"){
@@ -27,5 +28,8 @@ export default function handlers(client: Client) {
                 }
             }
         }
+
+        // @ts-ignore
+        new socialCommandsManager("hug", null, null).injector(client);
     })();
 }

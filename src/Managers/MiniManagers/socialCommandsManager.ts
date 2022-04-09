@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 import { User } from "@sentry/node";
-import { Client } from "@sentry/types";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, Message, MessageEmbed, Client} from "discord.js";
+import {argsUtil} from "../CommandsManager/NormalCommands/argsUtil";
 import emojis from "../../assets/emojis";
 import { descriptionsModel } from "../../DB/mongoDBSchemas/API/descriptions";
 import { imagesModel } from "../../DB/mongoDBSchemas/API/images";
@@ -11,6 +11,7 @@ import { descriptions, images } from "../../Typings/DBInterfaces";
 import { botCommand, revisionManager } from "../CommandsManager/NormalCommands/revisionManager";
 import { run } from "../CommandsManager/NormalCommands/runManager";
 import { DBMain } from "./DBMainManager";
+import {inspect} from "util"
 
 export type imagesAPI = | "hug" | "kiss" | "pat" | "happy" | "sad" | "angry" | "love" | "hate" | "confused" | "bored" | "scared" | "fucks" | "licks" | "sucks";
 const imagesAPI = ["hug", "kiss", "pat", "happy", "sad", "angry", "love", "hate", "confused", "bored", "scared", "fucks", "licks", "sucks"];
@@ -658,7 +659,7 @@ export class socialCommandsManager extends numbersUtil {
      * @method The main method of the socialCommandsManager class.
      */
 
-    async run() {
+    async run(member: GuildMember) {
         try {
         const description = await this.getFinalDescription(), image = await this.getRandomImage(this.command), number = await this.getNumber(this.member.id, this.command), user = await new DBMain().getUser(this.message.author.id);
         const finalEmbed = new MessageEmbed()
@@ -712,13 +713,15 @@ export class socialCommandsManager extends numbersUtil {
             messageEmbed: finalEmbed
         } as finalSocialCommand
         } catch (e) {
-            this.message.client.sentry.captureException(e);
+
+          interface error {
+            messageEmbed: MessageEmbed
+            error: string
+        }
             return {
                 messageEmbed: new MessageEmbed().setDescription(`${emojis.perro_tonto} *Ha ocurrido un error interno, este sera solucionado pronto.*`).setColor("PURPLE"),
                 error: e
             } as error
-        } finally {
-            this.message.client.catcher.finish();
         }
         
         
@@ -729,19 +732,21 @@ export class socialCommandsManager extends numbersUtil {
      * @param client The client of the bot.
      */
     async injector(client: Client) {
-        const q = this; var comandoo;
+        const q = this; var comandoo; var comandos = global.commands as Collection<string, revisionManager>;
+        if (!comandos.has(`hug`)) {}
         for (var comando of imagesAPI) {
-            if (comando.endsWith("s")) {comandoo = comando.slice(0, -1)} else {comandoo = comando}
-            const command = new botCommand().setName(comandoo).setCommandOptions({"expectedArgs": 1, expectedArgsMin: 1}).setInfoOptions({"description": `Comando social (generado automaticamente)`, usage: `${comando} <usuario>`, examples: [`${comando} @user`]});
+            
+            const command = new botCommand().setName(comando).setCommandOptions({"expectedArgs": 1, expectedArgsMin: 1, aliases: [comando.slice(0, -1)]}).setInfoOptions({"description": `Comando social (generado automaticamente)`, usage: `${comando} <usuario>`, examples: [`${comando} @user`]});
             class socialCommand extends revisionManager {
                 constructor(client: Client) {
                     super(client, command)
                 }
 
                 async run(b: run) {
-                    const a = q.run()
-
-                    b.reply({embeds: [a.messageEmbed]})
+                  b.send(comandoo)
+                  const member = await new argsUtil(b.args, b.message).getMember()
+                  const a = await new socialCommandsManager(this.name, b.message, member).run(member).catch(a => a)
+                  b.send(inspect(a))
                 }
             }
             global.commands.set(command.name, new socialCommand(client));

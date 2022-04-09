@@ -1,3 +1,6 @@
+import { Collection, Message } from "discord.js";
+import { revisionManager } from "../CommandsManager/NormalCommands/revisionManager";
+import { socialCommandsManager } from "../MiniManagers/socialCommandsManager";
 import { cache } from "./Cache";
 
 
@@ -14,8 +17,28 @@ export class temporalCacheOptions extends cache {
      * @method socialCommandEjected? - Ccheck if the command is ejected from the social commands and turn off or turn on.
      */
 
-    socialCommandEjected(command: string, turnOn: boolean = false) {
-        
+    async socialCommandsCenter(message: Message, commandos: Collection<string, revisionManager> ) {
+        const commands = global.commands as Collection<string, revisionManager>;
+        if (commands.has(`hug`) && this.get().socialCommands == true) return {
+            sucess: false, 
+            message: "The commands is already pushed."
+        }
+        if (commands.has(`hug`) && this.get().socialCommands == false) {
+            this.set("socialCommands", true)
+            return {
+                succes: false,
+                message: "The command is already ejected."
+            }
+        }
+        if (commands.has(`hug`) == false && this.get().socialCommands == true) {
+            this.set("socialCommands", true)
+            await new socialCommandsManager("hug", message, null);
+            return {
+                succes: false,
+                message: "The command is already pushed."
+            }
+        }
+
     }
 
 }

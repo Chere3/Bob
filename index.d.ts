@@ -1,6 +1,6 @@
 import { Collection } from "discord.js";
-import { kargs, revisionManager } from "../Managers/CommandsManager/NormalCommands/revisionManager";
-import { cooldownCommand } from "./DiscordExtends";
+import { kargs, revisionManager } from "./src/Managers/CommandsManager/NormalCommands/revisionManager";
+import { cooldownCommand } from "./src/Typings/DiscordExtends";
 
 declare module "discord.js" {
     interface Client {
@@ -28,6 +28,11 @@ declare global {
             AUTH_LOGS: string,
             AUTH_R_LOGS: string,
             AUTH_RR_LOGS: string
+        }
+
+        interface Global {
+            commands: Collection<string, revisionManager>
+            Cooldowns: Collection<string, cooldownCommand>
         }
     }
 }
