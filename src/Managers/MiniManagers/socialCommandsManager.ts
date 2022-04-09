@@ -647,12 +647,26 @@ export class socialCommandsManager extends numbersUtil {
             user: this!.member,
             author: this.message.member
         }
-        const format = desc.replace(/{user}/g, this.member.displayName).replace(/{author}/g, this.message!.member!.displayName);
+        const format = desc.replace(/{user}/g, this.nameFix(this.member.displayName)).replace(/{author}/g, this.nameFix(this.message!.member!.displayName));
         return {
             desc: format,
             user: this.member,
             author: this.message.member
         } as result
+    }
+    /**
+     * @method The method to correct the name of the person that excute the command.
+     */
+
+    nameFix(name: string) {
+      // removes all the emojis of the name
+      const nameWithoutEmojis = name.replace(/[\u{1F300}-\u{1F5FF}]/u, "");
+      // removes all zalgo of the name
+      const nameWithoutZalgo = nameWithoutEmojis.replace(/[\u{1F300}-\u{1F5FF}]/u, "");
+      // removes all the special characters of the name
+      const nameWithoutSpecialCharacters = nameWithoutZalgo.replace(/[^a-zA-Z0-9 ]/g, "");
+
+      return nameWithoutSpecialCharacters;
     }
 
     /**
@@ -666,7 +680,7 @@ export class socialCommandsManager extends numbersUtil {
         .setAuthor({name: description?.desc ?? "error | error puesto en la base de datos. Solucionando automaticamente...", iconURL: description!.desc == undefined ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU" : description!.author.displayAvatarURL() ?? description!.author.user.displayAvatarURL()})
         .setColor(`PURPLE`)
         .setImage(image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZw1gAJL_GHdK3qioyOJsLiwQq4L5D1vy1smBHjzwnh-hp_6Ik1o2lbSxEUZ8AcK96FXA&usqp=CAU")
-        .setFooter({text: number == undefined ? "Error." : `${number}`, iconURL: description!.user.displayAvatarURL() ?? description!.user.user.displayAvatarURL()});
+        .setFooter({text: number == undefined ? "Error." : `${member.displayName} lleva ${number} interacciones recibidas de este tipo.`, iconURL: description!.user.displayAvatarURL() ?? description!.user.user.displayAvatarURL()});
 
         interface finalSocialCommand {
             desc: string
@@ -736,17 +750,19 @@ export class socialCommandsManager extends numbersUtil {
         if (!comandos.has(`hug`)) {}
         for (var comando of imagesAPI) {
             
-            const command = new botCommand().setName(comando).setCommandOptions({"expectedArgs": 1, expectedArgsMin: 1, aliases: [comando.slice(0, -1)]}).setInfoOptions({"description": `Comando social (generado automaticamente)`, usage: `${comando} <usuario>`, examples: [`${comando} @user`]});
+            const command = new botCommand().setName(comando).setCommandOptions({"expectedArgs": 1, expectedArgsMin: 0, aliases: [comando.slice(0, -1)]}).setInfoOptions({"description": `Comando social (generado automaticamente)`, usage: `${comando} <usuario>`, examples: [`${comando} @user`]});
+
+            if (comando == "fuck" || comando == "sucks") command.setChannelAndGuildOptions({nsfw: true})
             class socialCommand extends revisionManager {
                 constructor(client: Client) {
                     super(client, command)
                 }
 
                 async run(b: run) {
-                  b.send(comandoo)
                   const member = await new argsUtil(b.args, b.message).getMember()
+                  if (!member) return new MessageEmbed().setDescription(`${emojis.perro_tonto} *Debes mencionar a alguien en el mensaje o responder a un mensaje para continuar..*`).setColor("PURPLE")
                   const a = await new socialCommandsManager(this.name, b.message, member).run(member).catch(a => a)
-                  b.send(inspect(a))
+                  b.send({embeds: [a.messageEmbed]})
                 }
             }
             global.commands.set(command.name, new socialCommand(client));
