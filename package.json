@@ -1,7 +1,7 @@
 {
-    "name": "fypbot",
+    "name": "bob",
     "version": "2.0.0",
-    "description": ":Un bot destinado a las herramientas principales del servidor de F&P",
+    "description": "Que onda compadre' acá un bot dispuesto a ayudarte en lo que sea",
     "main": "src/index.ts",
     "engines": {
         "node": ">=14.x"

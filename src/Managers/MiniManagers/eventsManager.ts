@@ -2,6 +2,7 @@ import { Client } from "discord.js";
 import { catcher, sentry } from "../..";
 import { config } from "../../config";
 import {run} from "../CommandsManager/NormalCommands/runManager"
+import { PingAndStatus } from "../DashBoardManager/PingAndStatus/PingAndStatusMessage";
 
 export default function eventsCore(client: Client) {
     client.on(`messageCreate`, (a) => {
@@ -42,5 +43,10 @@ export default function eventsCore(client: Client) {
     client.on("ready", (a) => {
         // @ts-ignore
         global.consola.log(`| Client Ready |`)
+    })
+
+    client.on("debug", (a) => {
+        // @ts-ignore
+        new PingAndStatus(a).editDebugMessage(client)
     })
 }

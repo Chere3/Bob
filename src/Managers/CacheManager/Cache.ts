@@ -1,6 +1,7 @@
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
-import file from "../../cache.json"
+// @ts-ignore
+import file from "../../../cache.json"
 
 /**
  * The main class of the cache.
